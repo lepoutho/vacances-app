@@ -40,8 +40,18 @@ function render(){
   renderBalances();
   renderSettlementFilter();
   renderSettlement();
+  const totalPeopleCount = countPeople();
   $('headerSummary').textContent =
-    `${state.people.length} voyageur${state.people.length>1?'s':''} · ${state.expenses.length} dépense${state.expenses.length>1?'s':''}`;
+    `${totalPeopleCount} personne${totalPeopleCount>1?'s':''} · ${state.expenses.length} dépense${state.expenses.length>1?'s':''}`;
+}
+
+/* ---------- Weighted headcount helpers ---------- */
+function personSize(p){
+  return p && p.size && p.size >= 1 ? p.size : 1;
+}
+
+function countPeople(){
+  return state.people.reduce((s, p) => s + personSize(p), 0);
 }
 
 /* ---------- People ---------- */
@@ -51,7 +61,9 @@ function renderPeople(){
   $('peopleEmptyHint').style.display = state.people.length ? 'none' : 'block';
   state.people.forEach(p => {
     const li = document.createElement('li');
-    li.innerHTML = `<span>${escapeHtml(p.name)}</span>`;
+    const size = p.size && p.size >= 1 ? p.size : 1;
+    const sizeBadge = size > 1 ? ` <span class="person-size">· ${size} personnes</span>` : '';
+    li.innerHTML = `<span>${escapeHtml(p.name)}${sizeBadge}</span>`;
     const btn = document.createElement('button');
     btn.textContent = '✕';
     btn.title = 'Retirer ' + p.name;
@@ -73,12 +85,16 @@ function removePerson(id){
 $('personForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const input = $('personInput');
+  const sizeInput = $('personSize');
   const name = input.value.trim();
   if(!name) return;
-  const person = { id: uid(), name };
+  let size = parseInt(sizeInput.value, 10);
+  if(!Number.isFinite(size) || size < 1) size = 1;
+  const person = { id: uid(), name, size };
   state.people.push(person);
   selectedParticipants.add(person.id);
   input.value = '';
+  sizeInput.value = '1';
   save(); render();
   input.focus();
 });
@@ -221,8 +237,9 @@ function renderTotals(){
   if(!hasData) return;
   const totals = computeTotals();
   const totalAmount = state.expenses.reduce((s, e) => s + e.amount, 0);
-  const avg = totalAmount / state.people.length;
-  $('avgLine').innerHTML = `Dépense moyenne par personne : <strong>${fmt(avg)}</strong> (total ${fmt(totalAmount)} sur ${state.people.length} voyageur${state.people.length > 1 ? 's' : ''})`;
+  const totalPeopleCount = countPeople();
+  const avg = totalAmount / totalPeopleCount;
+  $('avgLine').innerHTML = `Dépense moyenne par personne : <strong>${fmt(avg)}</strong> (total ${fmt(totalAmount)} sur ${totalPeopleCount} personne${totalPeopleCount > 1 ? 's' : ''})`;
   state.people.forEach(p => {
     const t = totals[p.id] || { amount: 0, count: 0 };
     const row = document.createElement('div');
@@ -236,10 +253,17 @@ function renderTotals(){
 /* ---------- Balances ---------- */
 function computeBalances(){
   const balance = {};
-  state.people.forEach(p => balance[p.id] = 0);
+  const sizeById = {};
+  state.people.forEach(p => { balance[p.id] = 0; sizeById[p.id] = personSize(p); });
   state.expenses.forEach(exp => {
-    const share = exp.amount / exp.participants.length;
-    exp.participants.forEach(pid => { if(pid in balance) balance[pid] -= share; });
+    // Each participant's share is weighted by how many people they represent,
+    // so a traveler entry covering 2 people pays twice the share of one covering 1.
+    const totalWeight = exp.participants.reduce((s, pid) => s + (sizeById[pid] || 0), 0);
+    if(totalWeight <= 0) return;
+    exp.participants.forEach(pid => {
+      const weight = sizeById[pid] || 0;
+      if(pid in balance) balance[pid] -= exp.amount * weight / totalWeight;
+    });
     if(exp.payer in balance) balance[exp.payer] += exp.amount;
   });
   return balance;
@@ -400,7 +424,7 @@ $('importInput').addEventListener('change', (e) => {
       }
       state = {
         tripName: parsed.tripName || 'Nos vacances',
-        people: parsed.people,
+        people: parsed.people.map(p => ({ ...p, size: (p.size && p.size >= 1) ? p.size : 1 })),
         expenses: parsed.expenses
       };
       selectedParticipants = new Set(state.people.map(p => p.id));
