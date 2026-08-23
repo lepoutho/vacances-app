@@ -122,11 +122,9 @@ function renderParticipantChips(){
   const wrap = $('expenseParticipants');
   wrap.innerHTML = '';
   if(state.people.length === 0) return;
-  state.people.forEach(p => {
-    if(!selectedParticipants.has(p.id) && selectedParticipants.size === 0){
-      selectedParticipants.add(p.id);
-    }
-  });
+  if(selectedParticipants.size === 0){
+    state.people.forEach(p => selectedParticipants.add(p.id));
+  }
   state.people.forEach(p => {
     const chip = document.createElement('div');
     chip.className = 'chip' + (selectedParticipants.has(p.id) ? ' active' : '');
