@@ -146,6 +146,7 @@ button:active{ transform: scale(0.97); }
 
 #personForm{ display:flex; gap: 8px; }
 #personForm input{ flex:1; }
+#personForm input#personSize{ flex: none; width: 70px; text-align:center; }
 
 #expenseForm{ display:flex; flex-direction:column; gap: 10px; }
 .row2{ display:flex; gap: 8px; }
@@ -177,6 +178,7 @@ button:active{ transform: scale(0.97); }
   background:none; color: var(--coral); font-weight:600; padding: 2px 6px; font-size: 16px; line-height:1;
 }
 #peopleList li button:hover{ background: none; opacity:0.7; }
+.person-size{ color: var(--ink-soft); font-size: 12px; font-weight: 500; }
 
 .expense-list-filter{ margin-top: 18px; }
 .expense-list-filter .chip-list{ margin-bottom: 4px; }
