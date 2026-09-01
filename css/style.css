@@ -144,9 +144,10 @@ button{
 button:hover{ background: var(--teal-deep); }
 button:active{ transform: scale(0.97); }
 
-#personForm{ display:flex; gap: 8px; }
+#personForm{ display:flex; gap: 8px; align-items:center; }
 #personForm input{ flex:1; }
 #personForm input#personSize{ flex: none; width: 70px; text-align:center; }
+#personForm .represents-label{ flex:none; white-space:nowrap; color: var(--muted, #666); font-size: 0.9em; }
 
 #expenseForm{ display:flex; flex-direction:column; gap: 10px; }
 .row2{ display:flex; gap: 8px; }
