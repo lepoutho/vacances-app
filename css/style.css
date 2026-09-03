@@ -288,3 +288,32 @@ button:active{ transform: scale(0.97); }
 .empty-hint{ color: var(--ink-soft); font-size: 13px; margin-top: 10px; }
 
 footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 40px; }
+
+/* ---------- Modal dialogs (replaces native alert/confirm, which the
+   browser renders in its own UI language, not the page's) ---------- */
+.modal-overlay{
+  position: fixed; inset: 0;
+  background: rgba(20,43,61,0.55);
+  display:flex; align-items:center; justify-content:center;
+  padding: 20px;
+  z-index: 1000;
+}
+.modal-overlay[hidden]{ display:none; }
+.modal-box{
+  background: var(--paper);
+  border-radius: var(--radius);
+  padding: 24px 26px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 16px 48px rgba(20,43,61,0.28);
+}
+.modal-message{ margin: 0 0 20px; font-size: 14.5px; line-height:1.5; color: var(--ink); }
+.modal-actions{ display:flex; justify-content:flex-end; gap:10px; }
+.modal-btn-secondary{
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.modal-btn-secondary:hover{ background: var(--bg); }
+#modalConfirmBtn.modal-btn-danger{ background: var(--coral); }
+#modalConfirmBtn.modal-btn-danger:hover{ background: #cf4d3a; }
