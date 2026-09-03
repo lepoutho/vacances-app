@@ -52,6 +52,52 @@ $('langSelect').addEventListener('change', (e) => {
   render();
 });
 
+/* ---------- Modal dialogs (replaces native alert/confirm, whose title bar
+   and buttons are drawn by the browser in its own language, not the
+   page's — so they stayed untranslated no matter the selected language) --*/
+function showModal({ message, confirmKey = 'modalOkBtn', cancelKey = null, danger = false }){
+  return new Promise(resolve => {
+    const overlay = $('modalOverlay');
+    const confirmBtn = $('modalConfirmBtn');
+    const cancelBtn = $('modalCancelBtn');
+
+    $('modalMessage').textContent = message;
+    confirmBtn.textContent = t(confirmKey);
+    confirmBtn.classList.toggle('modal-btn-danger', danger);
+    cancelBtn.hidden = !cancelKey;
+    if(cancelKey) cancelBtn.textContent = t(cancelKey);
+
+    function cleanup(result){
+      overlay.hidden = true;
+      confirmBtn.removeEventListener('click', onConfirm);
+      cancelBtn.removeEventListener('click', onCancel);
+      overlay.removeEventListener('click', onOverlayClick);
+      document.removeEventListener('keydown', onKeydown);
+      resolve(result);
+    }
+    function onConfirm(){ cleanup(true); }
+    function onCancel(){ cleanup(false); }
+    function onOverlayClick(e){ if(e.target === overlay) cleanup(false); }
+    function onKeydown(e){ if(e.key === 'Escape') cleanup(false); }
+
+    confirmBtn.addEventListener('click', onConfirm);
+    cancelBtn.addEventListener('click', onCancel);
+    overlay.addEventListener('click', onOverlayClick);
+    document.addEventListener('keydown', onKeydown);
+
+    overlay.hidden = false;
+    confirmBtn.focus();
+  });
+}
+
+function showAlert(message){
+  return showModal({ message, confirmKey: 'modalOkBtn', cancelKey: null });
+}
+
+function showConfirm(message, { danger = false } = {}){
+  return showModal({ message, confirmKey: 'modalConfirmBtn', cancelKey: 'modalCancelBtn', danger });
+}
+
 function fmt(n){
   return n.toLocaleString(LOCALE_MAP[currentLang] || 'fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 }
@@ -475,7 +521,7 @@ $('importInput').addEventListener('change', (e) => {
     try{
       const parsed = JSON.parse(ev.target.result);
       if(!parsed || !Array.isArray(parsed.people) || !Array.isArray(parsed.expenses)){
-        alert(t('importInvalidFile'));
+        showAlert(t('importInvalidFile'));
         return;
       }
       state = {
@@ -490,7 +536,7 @@ $('importInput').addEventListener('change', (e) => {
       save();
       render();
     }catch(err){
-      alert(t('importParseError'));
+      showAlert(t('importParseError'));
     }
   };
   reader.readAsText(file);
@@ -498,15 +544,16 @@ $('importInput').addEventListener('change', (e) => {
 });
 
 $('resetBtn').addEventListener('click', () => {
-  const sure = confirm(t('resetConfirm'));
-  if(!sure) return;
-  state = { tripName: t('defaultTripName'), people: [], expenses: [] };
-  selectedParticipants = new Set();
-  participantsInitialized = false;
-  settlementFilter = new Set();
-  expensePayerFilter = new Set();
-  save();
-  render();
+  showConfirm(t('resetConfirm'), { danger: true }).then(sure => {
+    if(!sure) return;
+    state = { tripName: t('defaultTripName'), people: [], expenses: [] };
+    selectedParticipants = new Set();
+    participantsInitialized = false;
+    settlementFilter = new Set();
+    expensePayerFilter = new Set();
+    save();
+    render();
+  });
 });
 
 load();

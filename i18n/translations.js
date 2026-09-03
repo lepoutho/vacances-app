@@ -59,7 +59,10 @@ const TRANSLATIONS = {
     footerText: "This trip's data stays saved in your browser.",
     importInvalidFile: 'This file does not look like a valid Vacances app save.',
     importParseError: 'Unable to read this JSON file.',
-    resetConfirm: 'Resetting will erase all travelers, expenses, and the trip name. This action cannot be undone. Continue?'
+    resetConfirm: 'Resetting will erase all travelers, expenses, and the trip name. This action cannot be undone. Continue?',
+    modalOkBtn: 'OK',
+    modalConfirmBtn: 'Continue',
+    modalCancelBtn: 'Cancel'
   },
 
   es: {
@@ -118,7 +121,10 @@ const TRANSLATIONS = {
     footerText: 'Los datos de este viaje se guardan en tu navegador.',
     importInvalidFile: 'Este archivo no parece ser una copia de seguridad válida de la app Vacaciones.',
     importParseError: 'No se pudo leer este archivo JSON.',
-    resetConfirm: 'Reiniciar borrará todos los viajeros, gastos y el nombre del viaje. Esta acción no se puede deshacer. ¿Continuar?'
+    resetConfirm: 'Reiniciar borrará todos los viajeros, gastos y el nombre del viaje. Esta acción no se puede deshacer. ¿Continuar?',
+    modalOkBtn: 'Aceptar',
+    modalConfirmBtn: 'Continuar',
+    modalCancelBtn: 'Cancelar'
   },
 
   fr: {
@@ -177,7 +183,10 @@ const TRANSLATIONS = {
     footerText: 'Les données de ce voyage restent enregistrées dans ton navigateur.',
     importInvalidFile: "Ce fichier ne semble pas être une sauvegarde valide de l'appli Vacances.",
     importParseError: 'Impossible de lire ce fichier JSON.',
-    resetConfirm: 'Réinitialiser va effacer tous les voyageurs, dépenses et le nom du voyage. Cette action est irréversible. Continuer ?'
+    resetConfirm: 'Réinitialiser va effacer tous les voyageurs, dépenses et le nom du voyage. Cette action est irréversible. Continuer ?',
+    modalOkBtn: 'OK',
+    modalConfirmBtn: 'Continuer',
+    modalCancelBtn: 'Annuler'
   }
 };
 
