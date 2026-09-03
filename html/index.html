@@ -13,15 +13,16 @@
 
   <header class="ticket-header">
     <div class="header-left">
-      <div class="airline-mark">✈ Vacances</div>
+      <div class="airline-mark">✈ <span data-i18n="airlineMark">Vacances</span></div>
       <input id="tripName" class="trip-name-input" value="Nos vacances" spellcheck="false"/>
     </div>
     <div class="header-right">
       <div class="ticket-meta" id="headerSummary">0 voyageur · 0 dépense</div>
       <div class="file-actions">
-        <button type="button" id="exportBtn" class="ghost-btn">⬇ Enregistrer le fichier .json</button>
-        <button type="button" id="importBtn" class="ghost-btn">⬆ Ouvrir le fichier .json</button>
-        <button type="button" id="resetBtn" class="ghost-btn ghost-btn-danger">↺ Réinitialiser</button>
+        <select id="langSelect" class="ghost-btn lang-select"></select>
+        <button type="button" id="exportBtn" class="ghost-btn" data-i18n="exportBtn">⬇ Enregistrer le fichier .json</button>
+        <button type="button" id="importBtn" class="ghost-btn" data-i18n="importBtn">⬆ Ouvrir le fichier .json</button>
+        <button type="button" id="resetBtn" class="ghost-btn ghost-btn-danger" data-i18n="resetBtn">↺ Réinitialiser</button>
         <input type="file" id="importInput" accept="application/json" hidden />
       </div>
     </div>
@@ -29,65 +30,66 @@
 
   <div class="grid">
     <section class="panel panel-people">
-      <h2>Voyageurs</h2>
+      <h2 data-i18n="peopleSectionTitle">Voyageurs</h2>
       <form id="personForm">
-        <input id="personInput" placeholder="Prénom (ex: Thomas-et-Marie)" autocomplete="off" required/>
-        <span class="represents-label">représente</span>
-        <input id="personSize" type="number" min="1" step="1" value="1" title="Nombre de personnes représentées"/>
-        <button type="submit">Ajouter</button>
+        <input id="personInput" placeholder="Prénom (ex: Thomas-et-Marie)" data-i18n-placeholder="personNamePlaceholder" autocomplete="off" required/>
+        <span class="represents-label" data-i18n="representsLabel">représente</span>
+        <input id="personSize" type="number" min="1" step="1" value="1" title="Nombre de personnes représentées" data-i18n-title="personSizeTitle"/>
+        <button type="submit" data-i18n="addPersonBtn">Ajouter</button>
       </form>
       <ul id="peopleList"></ul>
-      <p class="empty-hint" id="peopleEmptyHint">Ajoute les personnes qui partent en vacances.</p>
+      <p class="empty-hint" id="peopleEmptyHint" data-i18n="peopleEmptyHint">Ajoute les personnes qui partent en vacances.</p>
     </section>
 
     <section class="panel panel-expense">
-      <h2>Nouvelle dépense</h2>
+      <h2 data-i18n="expenseSectionTitle">Nouvelle dépense</h2>
       <form id="expenseForm">
-        <input id="expenseDesc" placeholder="Ex: Restaurant, essence, logement…" required/>
+        <input id="expenseDesc" placeholder="Ex: Restaurant, essence, logement…" data-i18n-placeholder="expenseDescPlaceholder" required/>
         <div class="row2">
-          <input id="expenseAmount" type="number" min="0" step="0.01" placeholder="Montant €" required/>
+          <input id="expenseAmount" type="number" min="0" step="0.01" placeholder="Montant €" data-i18n-placeholder="expenseAmountPlaceholder" required/>
           <select id="expensePayer" required></select>
         </div>
         <div>
-          <p class="eyebrow">Partagée entre</p>
+          <p class="eyebrow" data-i18n="sharedBetweenLabel">Partagée entre</p>
           <div class="chip-list" id="expenseParticipants"></div>
         </div>
-        <button type="submit">Ajouter la dépense</button>
+        <button type="submit" data-i18n="addExpenseBtn">Ajouter la dépense</button>
       </form>
       <div class="expense-list-filter">
-        <p class="eyebrow">Filtrer par payeur</p>
+        <p class="eyebrow" data-i18n="filterByPayerLabel">Filtrer par payeur</p>
         <div class="chip-list" id="expensePayerFilter"></div>
       </div>
       <ul id="expenseList"></ul>
-      <p class="empty-hint" id="expenseEmptyHint">Aucune dépense pour l'instant.</p>
+      <p class="empty-hint" id="expenseEmptyHint" data-i18n="expenseEmptyDefault">Aucune dépense pour l'instant.</p>
     </section>
   </div>
 
   <section class="panel panel-totals">
-    <h2>Dépenses</h2>
+    <h2 data-i18n="totalsSectionTitle">Dépenses</h2>
     <p class="avg-line" id="avgLine"></p>
     <div id="totalsList"></div>
-    <p class="empty-hint" id="totalsEmptyHint">Ajoute des voyageurs et des dépenses pour voir le détail.</p>
+    <p class="empty-hint" id="totalsEmptyHint" data-i18n="totalsEmptyHint">Ajoute des voyageurs et des dépenses pour voir le détail.</p>
   </section>
 
   <section class="panel panel-balances">
-    <h2>Soldes</h2>
+    <h2 data-i18n="balancesSectionTitle">Soldes</h2>
     <div id="balancesList"></div>
-    <p class="empty-hint" id="balEmptyHint">Ajoute des voyageurs et des dépenses pour voir les soldes.</p>
+    <p class="empty-hint" id="balEmptyHint" data-i18n="balEmptyHint">Ajoute des voyageurs et des dépenses pour voir les soldes.</p>
   </section>
 
   <section class="panel panel-settlement">
-    <h2>Pour équilibrer les comptes</h2>
+    <h2 data-i18n="settlementSectionTitle">Pour équilibrer les comptes</h2>
     <div>
-      <p class="eyebrow">Filtrer par voyageur</p>
+      <p class="eyebrow" data-i18n="filterByTravelerLabel">Filtrer par voyageur</p>
       <div class="chip-list" id="settlementFilter"></div>
     </div>
     <div class="tickets" id="settlementTickets"></div>
   </section>
 
-  <footer>Les données de ce voyage restent enregistrées dans ton navigateur.</footer>
+  <footer data-i18n="footerText">Les données de ce voyage restent enregistrées dans ton navigateur.</footer>
 </div>
 
+<script src="../i18n/translations.js"></script>
 <script src="../javascript/app.js"></script>
 </body>
 </html>

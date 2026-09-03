@@ -86,6 +86,16 @@ body{
 .ghost-btn:hover{ background: rgba(250,246,236,0.12); }
 .ghost-btn-danger{ border-color: rgba(232,96,76,0.55); color: #F3A897; }
 .ghost-btn-danger:hover{ background: rgba(232,96,76,0.18); }
+.lang-select{ cursor:pointer; }
+.lang-select option{ color: var(--ink); background: var(--paper); }
+/* Fixed min-widths sized for each button's longest translation (French),
+   so the header wraps identically regardless of the active language —
+   otherwise a shorter translation lets buttons fit on one row while a
+   longer one wraps to two, making the header visibly jump on switch. */
+#langSelect{ min-width: 96px; }
+#exportBtn{ min-width: 202px; }
+#importBtn{ min-width: 172px; }
+#resetBtn{ min-width: 112px; }
 
 /* ---------- layout ---------- */
 .grid{
