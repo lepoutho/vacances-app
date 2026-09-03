@@ -1,6 +1,16 @@
 const STORAGE_KEY = 'vacances-trip-v1';
-let state = { tripName: 'Nos vacances', people: [], expenses: [] };
+const LANG_STORAGE_KEY = 'vacances-lang';
+const LOCALE_MAP = { en: 'en-US', es: 'es-ES', fr: 'fr-FR' };
+
+let currentLang = 'fr';
+try{
+  const savedLang = localStorage.getItem(LANG_STORAGE_KEY);
+  if(savedLang && TRANSLATIONS[savedLang]) currentLang = savedLang;
+}catch(e){ /* localStorage unavailable */ }
+
+let state = { tripName: TRANSLATIONS[currentLang].defaultTripName, people: [], expenses: [] };
 let selectedParticipants = new Set();
+let participantsInitialized = false; // true once the default "everyone selected" fill has run
 let settlementFilter = new Set(); // empty = everyone
 let expensePayerFilter = new Set(); // empty = everyone
 
@@ -8,8 +18,42 @@ const $ = (id) => document.getElementById(id);
 
 function uid(){ return Math.random().toString(36).slice(2, 9); }
 
+/* ---------- i18n ---------- */
+function t(key, ...args){
+  const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
+  const entry = dict[key] !== undefined ? dict[key] : TRANSLATIONS.fr[key];
+  return typeof entry === 'function' ? entry(...args) : entry;
+}
+
+function applyStaticTranslations(){
+  document.documentElement.lang = currentLang;
+  document.title = t('pageTitle');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.getAttribute('data-i18n-title')); });
+}
+
+function renderLangSelect(){
+  const sel = $('langSelect');
+  sel.innerHTML = '';
+  LANGUAGE_ORDER.forEach(code => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = LANGUAGE_NAMES[code];
+    sel.appendChild(opt);
+  });
+  sel.value = currentLang;
+}
+
+$('langSelect').addEventListener('change', (e) => {
+  currentLang = e.target.value;
+  try{ localStorage.setItem(LANG_STORAGE_KEY, currentLang); }catch(err){ /* ignore */ }
+  applyStaticTranslations();
+  render();
+});
+
 function fmt(n){
-  return n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+  return n.toLocaleString(LOCALE_MAP[currentLang] || 'fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 }
 
 function save(){
@@ -26,11 +70,13 @@ function load(){
       if(parsed && Array.isArray(parsed.people)) state = parsed;
     }
   }catch(e){ /* no saved trip yet */ }
+  renderLangSelect();
+  applyStaticTranslations();
   render();
 }
 
 function render(){
-  $('tripName').value = state.tripName || 'Nos vacances';
+  $('tripName').value = state.tripName || t('defaultTripName');
   renderPeople();
   renderPayerSelect();
   renderParticipantChips();
@@ -41,8 +87,7 @@ function render(){
   renderSettlementFilter();
   renderSettlement();
   const totalPeopleCount = countPeople();
-  $('headerSummary').textContent =
-    `${totalPeopleCount} personne${totalPeopleCount>1?'s':''} · ${state.expenses.length} dépense${state.expenses.length>1?'s':''}`;
+  $('headerSummary').textContent = t('headerSummary', totalPeopleCount, state.expenses.length);
 }
 
 /* ---------- Weighted headcount helpers ---------- */
@@ -61,12 +106,12 @@ function renderPeople(){
   $('peopleEmptyHint').style.display = state.people.length ? 'none' : 'block';
   state.people.forEach(p => {
     const li = document.createElement('li');
-    const size = p.size && p.size >= 1 ? p.size : 1;
-    const sizeBadge = size > 1 ? ` <span class="person-size">· ${size} personnes</span>` : '';
+    const size = personSize(p);
+    const sizeBadge = size > 1 ? ` <span class="person-size">${t('personSizeBadge', size)}</span>` : '';
     li.innerHTML = `<span>${escapeHtml(p.name)}${sizeBadge}</span>`;
     const btn = document.createElement('button');
     btn.textContent = '✕';
-    btn.title = 'Retirer ' + p.name;
+    btn.title = t('removePersonTitle', p.name);
     btn.onclick = () => removePerson(p.id);
     li.appendChild(btn);
     list.appendChild(li);
@@ -105,14 +150,14 @@ function renderPayerSelect(){
   const prev = sel.value;
   sel.innerHTML = '';
   if(state.people.length === 0){
-    sel.innerHTML = '<option value="">Ajoute un voyageur</option>';
+    sel.innerHTML = `<option value="">${escapeHtml(t('payerSelectEmpty'))}</option>`;
     sel.disabled = true;
     return;
   }
   sel.disabled = false;
   state.people.forEach(p => {
     const opt = document.createElement('option');
-    opt.value = p.id; opt.textContent = 'Payé par ' + p.name;
+    opt.value = p.id; opt.textContent = t('payerSelectPrefix') + p.name;
     sel.appendChild(opt);
   });
   if(state.people.some(p => p.id === prev)) sel.value = prev;
@@ -122,9 +167,22 @@ function renderParticipantChips(){
   const wrap = $('expenseParticipants');
   wrap.innerHTML = '';
   if(state.people.length === 0) return;
-  if(selectedParticipants.size === 0){
+  if(!participantsInitialized){
     state.people.forEach(p => selectedParticipants.add(p.id));
+    participantsInitialized = true;
   }
+
+  const allSelected = state.people.every(p => selectedParticipants.has(p.id));
+  const allChip = document.createElement('div');
+  allChip.className = 'chip chip-all' + (allSelected ? ' active' : '');
+  allChip.textContent = t('allChipLabel');
+  allChip.onclick = () => {
+    if(allSelected) selectedParticipants.clear();
+    else state.people.forEach(p => selectedParticipants.add(p.id));
+    renderParticipantChips();
+  };
+  wrap.appendChild(allChip);
+
   state.people.forEach(p => {
     const chip = document.createElement('div');
     chip.className = 'chip' + (selectedParticipants.has(p.id) ? ' active' : '');
@@ -163,7 +221,7 @@ function renderExpensePayerFilter(){
 
   const allChip = document.createElement('div');
   allChip.className = 'chip chip-all' + (expensePayerFilter.size === 0 ? ' active' : '');
-  allChip.textContent = 'Tous';
+  allChip.textContent = t('allChipLabel');
   allChip.onclick = () => { expensePayerFilter.clear(); renderExpensePayerFilter(); renderExpenses(); };
   wrap.appendChild(allChip);
 
@@ -191,10 +249,10 @@ function renderExpenses(){
   }
   const noneMatch = state.expenses.length > 0 && expenses.length === 0;
   $('expenseEmptyHint').style.display = state.expenses.length ? 'none' : 'block';
-  $('expenseEmptyHint').textContent = "Aucune dépense pour l'instant.";
+  $('expenseEmptyHint').textContent = t('expenseEmptyDefault');
   if(noneMatch){
     $('expenseEmptyHint').style.display = 'block';
-    $('expenseEmptyHint').textContent = "Aucune dépense pour ce payeur.";
+    $('expenseEmptyHint').textContent = t('expenseEmptyForPayer');
   }
   expenses.forEach(exp => {
     const li = document.createElement('li');
@@ -202,11 +260,11 @@ function renderExpenses(){
     const shareNames = exp.participants.map(id => byId[id]).filter(Boolean).join(', ');
     li.innerHTML = `
       <div class="exp-top"><span>${escapeHtml(exp.desc)}</span><span>${fmt(exp.amount)}</span></div>
-      <div class="exp-sub">Payé par ${escapeHtml(payerName)} · partagé entre ${escapeHtml(shareNames)}</div>
+      <div class="exp-sub">${t('expenseSubLine', escapeHtml(payerName), escapeHtml(shareNames))}</div>
     `;
     const del = document.createElement('button');
     del.className = 'exp-del';
-    del.textContent = 'Supprimer';
+    del.textContent = t('deleteBtn');
     del.onclick = () => { state.expenses = state.expenses.filter(e => e.id !== exp.id); save(); render(); };
     li.appendChild(del);
     list.appendChild(li);
@@ -237,13 +295,13 @@ function renderTotals(){
   const totalAmount = state.expenses.reduce((s, e) => s + e.amount, 0);
   const totalPeopleCount = countPeople();
   const avg = totalAmount / totalPeopleCount;
-  $('avgLine').innerHTML = `Dépense moyenne par personne : <strong>${fmt(avg)}</strong> (total ${fmt(totalAmount)} sur ${totalPeopleCount} personne${totalPeopleCount > 1 ? 's' : ''})`;
+  $('avgLine').innerHTML = t('avgLine', fmt(avg), fmt(totalAmount), totalPeopleCount);
   state.people.forEach(p => {
-    const t = totals[p.id] || { amount: 0, count: 0 };
+    const personTotal = totals[p.id] || { amount: 0, count: 0 };
     const row = document.createElement('div');
     row.className = 'total-row';
-    row.innerHTML = `<span>${escapeHtml(p.name)} <span class="total-count">${t.count} dépense${t.count > 1 ? 's' : ''}</span></span>
-      <span class="total-amount">${fmt(t.amount)}</span>`;
+    row.innerHTML = `<span>${escapeHtml(p.name)} <span class="total-count">${t('totalCount', personTotal.count)}</span></span>
+      <span class="total-amount">${fmt(personTotal.amount)}</span>`;
     wrap.appendChild(row);
   });
 }
@@ -279,7 +337,7 @@ function renderBalances(){
     const row = document.createElement('div');
     row.className = 'bal-row';
     const cls = Math.abs(val) < 0.005 ? 'bal-zero' : (val > 0 ? 'bal-pos' : 'bal-neg');
-    const label = Math.abs(val) < 0.005 ? 'à jour' : (val > 0 ? 'doit recevoir' : 'doit');
+    const label = Math.abs(val) < 0.005 ? t('balanceUpToDate') : (val > 0 ? t('balanceOwesReceive') : t('balanceOwes'));
     row.innerHTML = `<span>${escapeHtml(p.name)} <span style="color:var(--ink-soft); font-size:12px;">${label}</span></span>
       <span class="bal-amount ${cls}">${fmt(Math.abs(val))}</span>`;
     wrap.appendChild(row);
@@ -322,7 +380,7 @@ function renderSettlementFilter(){
 
   const allChip = document.createElement('div');
   allChip.className = 'chip chip-all' + (settlementFilter.size === 0 ? ' active' : '');
-  allChip.textContent = 'Tous';
+  allChip.textContent = t('allChipLabel');
   allChip.onclick = () => { settlementFilter.clear(); renderSettlementFilter(); renderSettlement(); };
   wrap.appendChild(allChip);
 
@@ -347,30 +405,30 @@ function renderSettlement(){
   const byId = Object.fromEntries(state.people.map(p => [p.id, p.name]));
   let tx = computeSettlement();
   if(settlementFilter.size > 0){
-    tx = tx.filter(t => settlementFilter.has(t.from) || settlementFilter.has(t.to));
+    tx = tx.filter(txItem => settlementFilter.has(txItem.from) || settlementFilter.has(txItem.to));
   }
   if(tx.length === 0){
     const msg = settlementFilter.size > 0
-      ? "Aucun remboursement concernant les voyageurs sélectionnés."
-      : "Les comptes sont équilibrés — personne ne doit rien à personne.";
+      ? t('settlementEmptyFiltered')
+      : t('settlementEmptyAllSettled');
     wrap.innerHTML = `<div class="all-settled">${msg}</div>`;
     return;
   }
-  tx.forEach(t => {
+  tx.forEach(txItem => {
     const el = document.createElement('div');
     el.className = 'ticket';
     el.innerHTML = `
       <div class="t-from">
-        <span class="t-label">De</span>
-        <span class="t-name">${escapeHtml(byId[t.from] || '—')}</span>
+        <span class="t-label">${t('fromLabel')}</span>
+        <span class="t-name">${escapeHtml(byId[txItem.from] || '—')}</span>
       </div>
       <div class="t-mid">
         <span class="t-arrow">→</span>
-        <span class="t-amount">${fmt(t.amount)}</span>
+        <span class="t-amount">${fmt(txItem.amount)}</span>
       </div>
       <div class="t-to">
-        <span class="t-label">À</span>
-        <span class="t-name">${escapeHtml(byId[t.to] || '—')}</span>
+        <span class="t-label">${t('toLabel')}</span>
+        <span class="t-name">${escapeHtml(byId[txItem.to] || '—')}</span>
       </div>
       <div class="ticket-stub-line"></div>
     `;
@@ -417,21 +475,22 @@ $('importInput').addEventListener('change', (e) => {
     try{
       const parsed = JSON.parse(ev.target.result);
       if(!parsed || !Array.isArray(parsed.people) || !Array.isArray(parsed.expenses)){
-        alert("Ce fichier ne semble pas être une sauvegarde valide de l'appli Vacances.");
+        alert(t('importInvalidFile'));
         return;
       }
       state = {
-        tripName: parsed.tripName || 'Nos vacances',
+        tripName: parsed.tripName || t('defaultTripName'),
         people: parsed.people.map(p => ({ ...p, size: (p.size && p.size >= 1) ? p.size : 1 })),
         expenses: parsed.expenses
       };
       selectedParticipants = new Set(state.people.map(p => p.id));
+      participantsInitialized = true;
       settlementFilter = new Set();
       expensePayerFilter = new Set();
       save();
       render();
     }catch(err){
-      alert("Impossible de lire ce fichier JSON.");
+      alert(t('importParseError'));
     }
   };
   reader.readAsText(file);
@@ -439,10 +498,11 @@ $('importInput').addEventListener('change', (e) => {
 });
 
 $('resetBtn').addEventListener('click', () => {
-  const sure = confirm("Réinitialiser va effacer tous les voyageurs, dépenses et le nom du voyage. Cette action est irréversible. Continuer ?");
+  const sure = confirm(t('resetConfirm'));
   if(!sure) return;
-  state = { tripName: 'Nos vacances', people: [], expenses: [] };
+  state = { tripName: t('defaultTripName'), people: [], expenses: [] };
   selectedParticipants = new Set();
+  participantsInitialized = false;
   settlementFilter = new Set();
   expensePayerFilter = new Set();
   save();
