@@ -330,18 +330,29 @@ function computeTotals(){
   return totals;
 }
 
+/* True only when every expense is shared between all current travelers —
+   otherwise a single "average per person" figure is misleading (e.g. one
+   expense split among 2 of 4 people skews it), so the line stays hidden. */
+function allExpensesShareEveryone(){
+  if(state.expenses.length === 0) return false;
+  return state.expenses.every(exp => exp.participants.length === state.people.length);
+}
+
 function renderTotals(){
   const wrap = $('totalsList');
   wrap.innerHTML = '';
   const hasData = state.people.length > 0 && state.expenses.length > 0;
   $('totalsEmptyHint').style.display = hasData ? 'none' : 'block';
-  $('avgLine').style.display = hasData ? 'block' : 'none';
+  const showAvg = hasData && allExpensesShareEveryone();
+  $('avgLine').style.display = showAvg ? 'block' : 'none';
   if(!hasData) return;
   const totals = computeTotals();
-  const totalAmount = state.expenses.reduce((s, e) => s + e.amount, 0);
-  const totalPeopleCount = countPeople();
-  const avg = totalAmount / totalPeopleCount;
-  $('avgLine').innerHTML = t('avgLine', fmt(avg), fmt(totalAmount), totalPeopleCount);
+  if(showAvg){
+    const totalAmount = state.expenses.reduce((s, e) => s + e.amount, 0);
+    const totalPeopleCount = countPeople();
+    const avg = totalAmount / totalPeopleCount;
+    $('avgLine').innerHTML = t('avgLine', fmt(avg), fmt(totalAmount), totalPeopleCount);
+  }
   state.people.forEach(p => {
     const personTotal = totals[p.id] || { amount: 0, count: 0 };
     const row = document.createElement('div');

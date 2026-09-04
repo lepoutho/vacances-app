@@ -104,6 +104,11 @@ body{
   gap: 18px;
   margin-top: 18px;
 }
+/* Grid columns default to a minimum size based on their content (e.g. a
+   long "Payé par …" option in the payer <select>), which can force the
+   whole grid — and only the grid, not the header — wider than .app.
+   min-width:0 lets a column shrink below that content size instead. */
+.grid > *{ min-width: 0; }
 @media (max-width: 760px){ .grid{ grid-template-columns: 1fr; } }
 
 .panel{
@@ -113,6 +118,13 @@ body{
   border: 1px solid var(--line);
 }
 .panel + .panel{ margin-top: 18px; }
+/* ...but not between the two side-by-side panels inside .grid: that
+   generic adjacent-sibling rule also matches them (same class, same
+   sibling relationship), pushing "Nouvelle dépense" 18px below
+   "Voyageurs" and breaking their equal-height alignment. .grid's own
+   `gap` already provides the right spacing there (side-by-side on
+   desktop, stacked on mobile), so cancel the extra margin. */
+.grid > .panel + .panel{ margin-top: 0; }
 .panel h2{
   font-family:'Fraunces', serif;
   font-weight: 600;
@@ -154,14 +166,23 @@ button{
 button:hover{ background: var(--teal-deep); }
 button:active{ transform: scale(0.97); }
 
-#personForm{ display:flex; gap: 8px; align-items:center; }
-#personForm input{ flex:1; }
+#personForm{ display:flex; gap: 8px; align-items:center; flex-wrap: wrap; }
+/* flex-basis:0% (the shorthand "flex:1") gives an item zero weight in
+   the flexbox shrink calculation, so it never actually shrinks — the
+   opposite of what's wanted. "auto" basis lets personInput properly
+   absorb the row's shrinkage instead of the fixed-size label/size-field/
+   button giving up their own space; a small min-width plus flex-wrap
+   keeps it from being squeezed down to an unusable sliver at in-between
+   widths — it wraps onto its own line instead. */
+#personInput{ flex: 1 1 auto; min-width: 120px; }
 #personForm input#personSize{ flex: none; width: 70px; text-align:center; }
 #personForm .represents-label{ flex:none; white-space:nowrap; color: var(--muted, #666); font-size: 0.9em; }
+#personForm button{ flex: none; }
 
 #expenseForm{ display:flex; flex-direction:column; gap: 10px; }
 .row2{ display:flex; gap: 8px; }
 .row2 input{ flex:1; }
+.row2 select{ min-width: 0; flex-shrink: 1; }
 
 .chip-list{ display:flex; flex-wrap:wrap; gap:6px; margin: 2px 0 4px; }
 .chip{
