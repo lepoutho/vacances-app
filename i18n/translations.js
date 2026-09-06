@@ -60,9 +60,15 @@ const TRANSLATIONS = {
     importInvalidFile: 'This file does not look like a valid Vacances app save.',
     importParseError: 'Unable to read this JSON file.',
     resetConfirm: 'Resetting will erase all travelers, expenses, and the trip name. This action cannot be undone. Continue?',
+    confirmPartialExpense: (desc, amountFmt, payer, shares) =>
+      `"${desc}" (${amountFmt}) won't be shared by everyone.\nPaid by ${payer} · shared between ${shares}.\n\nContinue?`,
     modalOkBtn: 'OK',
     modalConfirmBtn: 'Continue',
-    modalCancelBtn: 'Cancel'
+    modalCancelBtn: 'Cancel',
+
+    joinExpensesIntro: "Please select the expenses you'd like to join. If none, leave them unselected.",
+    joinExpensesListLabel: 'Existing expenses',
+    joinExpensesConfirmBtn: 'Confirm'
   },
 
   es: {
@@ -122,9 +128,15 @@ const TRANSLATIONS = {
     importInvalidFile: 'Este archivo no parece ser una copia de seguridad válida de la app Vacaciones.',
     importParseError: 'No se pudo leer este archivo JSON.',
     resetConfirm: 'Reiniciar borrará todos los viajeros, gastos y el nombre del viaje. Esta acción no se puede deshacer. ¿Continuar?',
+    confirmPartialExpense: (desc, amountFmt, payer, shares) =>
+      `"${desc}" (${amountFmt}) no se compartirá entre todos.\nPagado por ${payer} · compartido entre ${shares}.\n\n¿Continuar?`,
     modalOkBtn: 'Aceptar',
     modalConfirmBtn: 'Continuar',
-    modalCancelBtn: 'Cancelar'
+    modalCancelBtn: 'Cancelar',
+
+    joinExpensesIntro: 'Selecciona los gastos en los que quieres participar. Si ninguno, no selecciones nada.',
+    joinExpensesListLabel: 'Gastos existentes',
+    joinExpensesConfirmBtn: 'Confirmar'
   },
 
   fr: {
@@ -184,9 +196,15 @@ const TRANSLATIONS = {
     importInvalidFile: "Ce fichier ne semble pas être une sauvegarde valide de l'appli Vacances.",
     importParseError: 'Impossible de lire ce fichier JSON.',
     resetConfirm: 'Réinitialiser va effacer tous les voyageurs, dépenses et le nom du voyage. Cette action est irréversible. Continuer ?',
+    confirmPartialExpense: (desc, amountFmt, payer, shares) =>
+      `« ${desc} » (${amountFmt}) ne sera pas partagée par tout le monde.\nPayé par ${payer} · partagé entre ${shares}.\n\nContinuer ?`,
     modalOkBtn: 'OK',
     modalConfirmBtn: 'Continuer',
-    modalCancelBtn: 'Annuler'
+    modalCancelBtn: 'Annuler',
+
+    joinExpensesIntro: 'Merci de sélectionner les dépenses auxquelles vous voulez participer. Si aucune, ne rien sélectionner.',
+    joinExpensesListLabel: 'Dépenses existantes',
+    joinExpensesConfirmBtn: 'Valider'
   }
 };
 

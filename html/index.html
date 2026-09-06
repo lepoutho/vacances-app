@@ -99,7 +99,25 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="joinExpensesModal" hidden>
+  <div class="modal-box modal-box-wide" role="dialog" aria-modal="true">
+    <p class="modal-message" data-i18n="joinExpensesIntro">Merci de sélectionner les dépenses auxquelles vous voulez participer. Si aucune, ne rien sélectionner.</p>
+    <p class="eyebrow" data-i18n="joinExpensesListLabel">Dépenses existantes</p>
+    <div class="join-expenses-list">
+      <label class="join-expense-row join-expense-all">
+        <input type="checkbox" id="joinExpensesAllCheckbox"/>
+        <span data-i18n="allChipLabel">Tous</span>
+      </label>
+      <div id="joinExpensesItems"></div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" id="joinExpensesConfirmBtn" data-i18n="joinExpensesConfirmBtn">Valider</button>
+    </div>
+  </div>
+</div>
+
 <script src="../i18n/translations.js"></script>
 <script src="../javascript/app.js"></script>
+<script src="../javascript/join-expenses.js"></script>
 </body>
 </html>
