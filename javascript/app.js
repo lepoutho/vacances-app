@@ -98,6 +98,9 @@ function showConfirm(message, { danger = false } = {}){
   return showModal({ message, confirmKey: 'modalConfirmBtn', cancelKey: 'modalCancelBtn', danger });
 }
 
+/* Join-existing-expenses modal (opened from the personForm handler below)
+   lives in its own file: javascript/join-expenses.js */
+
 function fmt(n){
   return n.toLocaleString(LOCALE_MAP[currentLang] || 'fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 }
@@ -182,12 +185,14 @@ $('personForm').addEventListener('submit', (e) => {
   let size = parseInt(sizeInput.value, 10);
   if(!Number.isFinite(size) || size < 1) size = 1;
   const person = { id: uid(), name, size };
+  const hadExpenses = state.expenses.length > 0;
   state.people.push(person);
   selectedParticipants.add(person.id);
   input.value = '';
   sizeInput.value = '1';
   save(); render();
   input.focus();
+  if(hadExpenses) openJoinExpensesModal(person.id);
 });
 
 /* ---------- Expense form helpers ---------- */
@@ -242,6 +247,14 @@ function renderParticipantChips(){
   });
 }
 
+function addExpense(desc, amount, payer, participants){
+  state.expenses.push({ id: uid(), desc, amount, payer, participants });
+  $('expenseDesc').value = '';
+  $('expenseAmount').value = '';
+  save(); render();
+  $('expenseDesc').focus();
+}
+
 $('expenseForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const desc = $('expenseDesc').value.trim();
@@ -250,11 +263,20 @@ $('expenseForm').addEventListener('submit', (e) => {
   const participants = Array.from(selectedParticipants);
   if(!desc || !amount || amount <= 0 || !payer || participants.length === 0) return;
 
-  state.expenses.push({ id: uid(), desc, amount, payer, participants });
-  $('expenseDesc').value = '';
-  $('expenseAmount').value = '';
-  save(); render();
-  $('expenseDesc').focus();
+  const sharedByEveryone = participants.length === state.people.length;
+  if(sharedByEveryone){
+    addExpense(desc, amount, payer, participants);
+    return;
+  }
+
+  // Not shared by everyone: confirm the exact split (payer included) before
+  // adding it, since it's easy to forget to select someone by mistake.
+  const byId = Object.fromEntries(state.people.map(p => [p.id, p.name]));
+  const payerName = byId[payer] || '—';
+  const shareNames = participants.map(id => byId[id]).filter(Boolean).join(', ');
+  showConfirm(t('confirmPartialExpense', desc, fmt(amount), payerName, shareNames)).then(ok => {
+    if(ok) addExpense(desc, amount, payer, participants);
+  });
 });
 
 function renderExpensePayerFilter(){
