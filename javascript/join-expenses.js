@@ -9,6 +9,7 @@ let joinExpensesPersonId = null;
 function renderJoinExpensesItems(){
   const wrap = $('joinExpensesItems');
   wrap.innerHTML = '';
+  const byId = Object.fromEntries(state.people.map(p => [p.id, p.name]));
   // Compare against everyone *except* the traveler currently being onboarded
   // (already added to state.people before this modal opens) — otherwise
   // every pre-existing expense would look "partial" just for missing them.
@@ -17,12 +18,18 @@ function renderJoinExpensesItems(){
   state.expenses.forEach(exp => {
     const isPartial = exp.participants.length < otherPeopleCount;
     if(isPartial) hasPartial = true;
+    const payerName = byId[exp.payer] || '—';
     const row = document.createElement('label');
     row.className = 'join-expense-row' + (isPartial ? ' join-expense-row-partial' : '');
     row.innerHTML = `
       <input type="checkbox" data-expense-id="${exp.id}"/>
-      <span class="join-expense-desc">${escapeHtml(exp.desc)}</span>
-      <span class="join-expense-amount">${fmt(exp.amount)}</span>
+      <span class="join-expense-info">
+        <span class="join-expense-top">
+          <span class="join-expense-desc">${escapeHtml(exp.desc)}</span>
+          <span class="join-expense-amount">${fmt(exp.amount)}</span>
+        </span>
+        <span class="join-expense-payer">${t('payerSelectPrefix')}${escapeHtml(payerName)}</span>
+      </span>
     `;
     wrap.appendChild(row);
   });
