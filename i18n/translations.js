@@ -42,6 +42,7 @@ const TRANSLATIONS = {
     avgLine: (avgFmt, totalFmt, count) =>
       `Average expense per person: <strong>${avgFmt}</strong> (total ${totalFmt} over ${count} ${count === 1 ? 'person' : 'people'})`,
     totalCount: (n) => `${n} ${n === 1 ? 'expense' : 'expenses'}`,
+    settlementTxCount: (n) => `${n} ${n === 1 ? 'transaction' : 'transactions'}`,
 
     balancesSectionTitle: 'Balances',
     balEmptyHint: 'Add travelers and expenses to see the balances.',
@@ -116,6 +117,7 @@ const TRANSLATIONS = {
     avgLine: (avgFmt, totalFmt, count) =>
       `Gasto medio por persona: <strong>${avgFmt}</strong> (total ${totalFmt} entre ${count} persona${count === 1 ? '' : 's'})`,
     totalCount: (n) => `${n} gasto${n === 1 ? '' : 's'}`,
+    settlementTxCount: (n) => `${n} transacción${n === 1 ? '' : 'es'}`,
 
     balancesSectionTitle: 'Saldos',
     balEmptyHint: 'Añade viajeros y gastos para ver los saldos.',
@@ -190,6 +192,7 @@ const TRANSLATIONS = {
     avgLine: (avgFmt, totalFmt, count) =>
       `Dépense moyenne par personne : <strong>${avgFmt}</strong> (total ${totalFmt} sur ${count} personne${count > 1 ? 's' : ''})`,
     totalCount: (n) => `${n} dépense${n > 1 ? 's' : ''}`,
+    settlementTxCount: (n) => `${n} transaction${n > 1 ? 's' : ''}`,
 
     balancesSectionTitle: 'Soldes',
     balEmptyHint: 'Ajoute des voyageurs et des dépenses pour voir les soldes.',
