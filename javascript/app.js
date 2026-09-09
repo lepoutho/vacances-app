@@ -78,7 +78,15 @@ function showModal({ message, confirmKey = 'modalOkBtn', cancelKey = null, dange
     function onConfirm(){ cleanup(true); }
     function onCancel(){ cleanup(false); }
     function onOverlayClick(e){ if(e.target === overlay) cleanup(false); }
-    function onKeydown(e){ if(e.key === 'Escape') cleanup(false); }
+    function onKeydown(e){
+      if(e.key === 'Escape') cleanup(false);
+      // Skip only when Cancel itself is focused, so its own native Enter
+      // activation still cancels rather than being overridden. Any other
+      // target (including stale focus left on an unrelated button behind
+      // the overlay) confirms — Confirm being focused just double-fires
+      // harmlessly alongside its own native activation.
+      else if(e.key === 'Enter' && e.target !== cancelBtn) onConfirm();
+    }
 
     confirmBtn.addEventListener('click', onConfirm);
     cancelBtn.addEventListener('click', onCancel);
@@ -182,6 +190,14 @@ $('personForm').addEventListener('submit', (e) => {
   const sizeInput = $('personSize');
   const name = input.value.trim();
   if(!name) return;
+  // Names are the only thing distinguishing travelers on screen (balances,
+  // "paid by", shares…) — two people with the same name would look
+  // impossible to tell apart everywhere, so duplicates are blocked here.
+  const isDuplicate = state.people.some(p => p.name.trim().toLowerCase() === name.toLowerCase());
+  if(isDuplicate){
+    showAlert(t('duplicateNameWarning', name));
+    return;
+  }
   let size = parseInt(sizeInput.value, 10);
   if(!Number.isFinite(size) || size < 1) size = 1;
   const person = { id: uid(), name, size };
@@ -288,14 +304,14 @@ function renderExpensePayerFilter(){
   expensePayerFilter.forEach(id => { if(!validIds.has(id)) expensePayerFilter.delete(id); });
 
   const allChip = document.createElement('div');
-  allChip.className = 'chip chip-all' + (expensePayerFilter.size === 0 ? ' active' : '');
+  allChip.className = 'chip chip-filter chip-all' + (expensePayerFilter.size === 0 ? ' active' : '');
   allChip.textContent = t('allChipLabel');
   allChip.onclick = () => { expensePayerFilter.clear(); renderExpensePayerFilter(); renderExpenses(); };
   wrap.appendChild(allChip);
 
   state.people.forEach(p => {
     const chip = document.createElement('div');
-    chip.className = 'chip' + (expensePayerFilter.has(p.id) ? ' active' : '');
+    chip.className = 'chip chip-filter' + (expensePayerFilter.has(p.id) ? ' active' : '');
     chip.textContent = p.name;
     chip.onclick = () => {
       if(expensePayerFilter.has(p.id)) expensePayerFilter.delete(p.id);
@@ -325,16 +341,27 @@ function renderExpenses(){
   expenses.forEach(exp => {
     const li = document.createElement('li');
     const payerName = byId[exp.payer] || '—';
-    const shareNames = exp.participants.map(id => byId[id]).filter(Boolean).join(', ');
+    const sharedByEveryone = exp.participants.length === state.people.length;
+    const subLine = sharedByEveryone
+      ? t('expenseSubLineEveryone', escapeHtml(payerName))
+      : t('expenseSubLine', escapeHtml(payerName), escapeHtml(exp.participants.map(id => byId[id]).filter(Boolean).join(', ')));
     li.innerHTML = `
       <div class="exp-top"><span>${escapeHtml(exp.desc)}</span><span>${fmt(exp.amount)}</span></div>
-      <div class="exp-sub">${t('expenseSubLine', escapeHtml(payerName), escapeHtml(shareNames))}</div>
+      <div class="exp-sub">${subLine}</div>
     `;
+    const actions = document.createElement('div');
+    actions.className = 'exp-actions';
+    const edit = document.createElement('button');
+    edit.className = 'exp-edit';
+    edit.textContent = t('editBtn');
+    edit.onclick = () => openEditExpenseModal(exp.id);
+    actions.appendChild(edit);
     const del = document.createElement('button');
     del.className = 'exp-del';
     del.textContent = t('deleteBtn');
     del.onclick = () => { state.expenses = state.expenses.filter(e => e.id !== exp.id); save(); render(); };
-    li.appendChild(del);
+    actions.appendChild(del);
+    li.appendChild(actions);
     list.appendChild(li);
   });
 }
@@ -375,8 +402,12 @@ function renderTotals(){
     const avg = totalAmount / totalPeopleCount;
     $('avgLine').innerHTML = t('avgLine', fmt(avg), fmt(totalAmount), totalPeopleCount);
   }
+  // Only travelers who actually paid for something get a row here — a
+  // "0 dépense · 0,00 €" line for someone who hasn't spent anything yet
+  // is just noise in this particular table.
   state.people.forEach(p => {
     const personTotal = totals[p.id] || { amount: 0, count: 0 };
+    if(personTotal.count === 0) return;
     const row = document.createElement('div');
     row.className = 'total-row';
     row.innerHTML = `<span>${escapeHtml(p.name)} <span class="total-count">${t('totalCount', personTotal.count)}</span></span>
@@ -458,14 +489,14 @@ function renderSettlementFilter(){
   settlementFilter.forEach(id => { if(!validIds.has(id)) settlementFilter.delete(id); });
 
   const allChip = document.createElement('div');
-  allChip.className = 'chip chip-all' + (settlementFilter.size === 0 ? ' active' : '');
+  allChip.className = 'chip chip-filter chip-all' + (settlementFilter.size === 0 ? ' active' : '');
   allChip.textContent = t('allChipLabel');
   allChip.onclick = () => { settlementFilter.clear(); renderSettlementFilter(); renderSettlement(); };
   wrap.appendChild(allChip);
 
   state.people.forEach(p => {
     const chip = document.createElement('div');
-    chip.className = 'chip' + (settlementFilter.has(p.id) ? ' active' : '');
+    chip.className = 'chip chip-filter' + (settlementFilter.has(p.id) ? ' active' : '');
     chip.textContent = p.name;
     chip.onclick = () => {
       if(settlementFilter.has(p.id)) settlementFilter.delete(p.id);

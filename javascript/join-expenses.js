@@ -9,9 +9,16 @@ let joinExpensesPersonId = null;
 function renderJoinExpensesItems(){
   const wrap = $('joinExpensesItems');
   wrap.innerHTML = '';
+  // Compare against everyone *except* the traveler currently being onboarded
+  // (already added to state.people before this modal opens) — otherwise
+  // every pre-existing expense would look "partial" just for missing them.
+  const otherPeopleCount = state.people.length - 1;
+  let hasPartial = false;
   state.expenses.forEach(exp => {
+    const isPartial = exp.participants.length < otherPeopleCount;
+    if(isPartial) hasPartial = true;
     const row = document.createElement('label');
-    row.className = 'join-expense-row';
+    row.className = 'join-expense-row' + (isPartial ? ' join-expense-row-partial' : '');
     row.innerHTML = `
       <input type="checkbox" data-expense-id="${exp.id}"/>
       <span class="join-expense-desc">${escapeHtml(exp.desc)}</span>
@@ -19,6 +26,9 @@ function renderJoinExpensesItems(){
     `;
     wrap.appendChild(row);
   });
+  const note = $('joinExpensesPartialNote');
+  note.hidden = !hasPartial;
+  if(hasPartial) note.textContent = t('joinExpensesPartialNote');
 }
 
 function updateJoinExpensesAllCheckbox(){
@@ -69,5 +79,9 @@ $('joinExpensesModal').addEventListener('click', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if(e.key === 'Escape' && !$('joinExpensesModal').hidden) closeJoinExpensesModal();
+  if($('joinExpensesModal').hidden) return;
+  if(e.key === 'Escape') closeJoinExpensesModal();
+  // No dedicated Cancel button here, so nothing to defer to — any Enter
+  // confirms (redundant but harmless if Confirm itself already has focus).
+  else if(e.key === 'Enter') $('joinExpensesConfirmBtn').click();
 });

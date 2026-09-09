@@ -31,7 +31,11 @@ const TRANSLATIONS = {
     expenseEmptyDefault: 'No expenses yet.',
     expenseEmptyForPayer: 'No expenses for this payer.',
     expenseSubLine: (payer, shares) => `Paid by ${payer} · shared between ${shares}`,
+    expenseSubLineEveryone: (payer) => `Paid by ${payer} · shared by everyone`,
     deleteBtn: 'Delete',
+    editBtn: 'Edit',
+    editExpenseTitle: 'Edit expense',
+    editExpenseSaveBtn: 'Save',
 
     totalsSectionTitle: 'Expenses',
     totalsEmptyHint: 'Add travelers and expenses to see the breakdown.',
@@ -58,6 +62,8 @@ const TRANSLATIONS = {
 
     footerText: "This trip's data stays saved in your browser.",
     importInvalidFile: 'This file does not look like a valid Vacances app save.',
+    duplicateNameWarning: (name) => `"${name}" has already been added. Please choose a different name so travelers stay distinguishable.`,
+    joinExpensesPartialNote: 'Expenses shown in red were not shared by everyone already on the trip — check whether you should be included in them too.',
     importParseError: 'Unable to read this JSON file.',
     resetConfirm: 'Resetting will erase all travelers, expenses, and the trip name. This action cannot be undone. Continue?',
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
@@ -99,7 +105,11 @@ const TRANSLATIONS = {
     expenseEmptyDefault: 'Todavía no hay gastos.',
     expenseEmptyForPayer: 'No hay gastos para este pagador.',
     expenseSubLine: (payer, shares) => `Pagado por ${payer} · compartido entre ${shares}`,
+    expenseSubLineEveryone: (payer) => `Pagado por ${payer} · compartido por todos`,
     deleteBtn: 'Eliminar',
+    editBtn: 'Editar',
+    editExpenseTitle: 'Editar gasto',
+    editExpenseSaveBtn: 'Guardar',
 
     totalsSectionTitle: 'Gastos',
     totalsEmptyHint: 'Añade viajeros y gastos para ver el detalle.',
@@ -126,6 +136,8 @@ const TRANSLATIONS = {
 
     footerText: 'Los datos de este viaje se guardan en tu navegador.',
     importInvalidFile: 'Este archivo no parece ser una copia de seguridad válida de la app Vacaciones.',
+    duplicateNameWarning: (name) => `"${name}" ya ha sido añadido. Elige un nombre diferente para que los viajeros sigan siendo distinguibles.`,
+    joinExpensesPartialNote: 'Los gastos en rojo no fueron compartidos por todos los que ya estaban en el viaje — comprueba si también deberías participar en ellos.',
     importParseError: 'No se pudo leer este archivo JSON.',
     resetConfirm: 'Reiniciar borrará todos los viajeros, gastos y el nombre del viaje. Esta acción no se puede deshacer. ¿Continuar?',
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
@@ -166,8 +178,12 @@ const TRANSLATIONS = {
     filterByPayerLabel: 'Filtrer par payeur',
     expenseEmptyDefault: "Aucune dépense pour l'instant.",
     expenseEmptyForPayer: 'Aucune dépense pour ce payeur.',
-    expenseSubLine: (payer, shares) => `Payé par ${payer} · partagé entre ${shares}`,
+    expenseSubLine: (payer, shares) => `Payé par ${payer} · partagée entre ${shares}`,
+    expenseSubLineEveryone: (payer) => `Payé par ${payer} · partagée par tous`,
     deleteBtn: 'Supprimer',
+    editBtn: 'Modifier',
+    editExpenseTitle: 'Modifier la dépense',
+    editExpenseSaveBtn: 'Enregistrer',
 
     totalsSectionTitle: 'Dépenses',
     totalsEmptyHint: 'Ajoute des voyageurs et des dépenses pour voir le détail.',
@@ -194,10 +210,12 @@ const TRANSLATIONS = {
 
     footerText: 'Les données de ce voyage restent enregistrées dans ton navigateur.',
     importInvalidFile: "Ce fichier ne semble pas être une sauvegarde valide de l'appli Vacances.",
+    duplicateNameWarning: (name) => `« ${name} » a déjà été ajouté. Merci de choisir un nom différent pour que les voyageurs restent identifiables.`,
+    joinExpensesPartialNote: "Les dépenses en rouge n'ont pas été partagées par tous les voyageurs déjà présents — vérifie si tu devrais y être inclus toi aussi.",
     importParseError: 'Impossible de lire ce fichier JSON.',
     resetConfirm: 'Réinitialiser va effacer tous les voyageurs, dépenses et le nom du voyage. Cette action est irréversible. Continuer ?',
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
-      `« ${desc} » (${amountFmt}) ne sera pas partagée par tout le monde.\nPayé par ${payer} · partagé entre ${shares}.\n\nContinuer ?`,
+      `« ${desc} » (${amountFmt}) ne sera pas partagée par tout le monde.\nPayée par ${payer} · partagée entre ${shares}.\n\nContinuer ?`,
     modalOkBtn: 'OK',
     modalConfirmBtn: 'Continuer',
     modalCancelBtn: 'Annuler',
