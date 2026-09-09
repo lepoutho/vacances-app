@@ -196,6 +196,10 @@ button:active{ transform: scale(0.97); }
   background: var(--bg);
 }
 .chip.active{ background: var(--teal); border-color: var(--teal); color: #fff; }
+/* Filter chips (narrowing what's shown below) vs. plain chips (choosing
+   who shares an expense): same teal accent, but outlined rather than
+   filled when active, so the two roles read differently at a glance. */
+.chip-filter.active{ background: transparent; border-color: var(--teal); color: var(--teal-deep); }
 
 /* ---------- people list ---------- */
 #peopleList{ list-style:none; margin: 14px 0 0; padding:0; display:flex; flex-direction:column; gap:8px; }
@@ -212,6 +216,7 @@ button:active{ transform: scale(0.97); }
 #peopleList li button:hover{ background: none; opacity:0.7; }
 .person-size{ color: var(--ink-soft); font-size: 12px; font-weight: 500; }
 
+.panel-divider{ border: none; border-top: 1px solid var(--line); margin: 20px 0 0; }
 .expense-list-filter{ margin-top: 18px; }
 .expense-list-filter .chip-list{ margin-bottom: 4px; }
 
@@ -225,8 +230,11 @@ button:active{ transform: scale(0.97); }
 }
 .exp-top{ display:flex; justify-content:space-between; font-weight:600; }
 .exp-sub{ color: var(--ink-soft); margin-top:2px; font-size:12.5px; }
-.exp-del{ background:none; color: var(--coral); font-size: 11px; padding:0; margin-top:4px; }
-.exp-del:hover{ background:none; text-decoration: underline; }
+.exp-actions{ display:flex; gap:14px; margin-top:4px; }
+.exp-del, .exp-edit{ background:none; font-size: 11px; padding:0; }
+.exp-del{ color: var(--coral); }
+.exp-edit{ color: var(--teal-deep); }
+.exp-del:hover, .exp-edit:hover{ background:none; text-decoration: underline; }
 
 .panel-settlement .eyebrow{ margin-top: 2px; }
 .panel-settlement .chip-list{ margin-bottom: 16px; }
@@ -329,6 +337,7 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
   box-shadow: 0 16px 48px rgba(20,43,61,0.28);
 }
 .modal-message{ margin: 0 0 20px; font-size: 14.5px; line-height:1.5; color: var(--ink); white-space: pre-line; }
+.modal-message-warning{ margin-top: -12px; font-size: 13px; color: var(--coral); }
 .modal-actions{ display:flex; justify-content:flex-end; gap:10px; }
 .modal-btn-secondary{
   background: transparent;
@@ -361,7 +370,13 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
 }
 .join-expense-desc{ flex:1; }
 .join-expense-amount{ font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+.join-expense-row-partial{ background: rgba(232,96,76,0.07); }
+.join-expense-row-partial:hover{ background: rgba(232,96,76,0.12); }
+.join-expense-row-partial .join-expense-desc{ color: var(--coral); }
 .join-expense-all{
   font-weight: 600;
   border-bottom: 1px solid var(--line);
 }
+
+/* ---------- Edit-expense modal ---------- */
+.edit-expense-fields{ display:flex; flex-direction:column; gap:10px; margin-bottom: 20px; }
