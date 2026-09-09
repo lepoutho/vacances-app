@@ -43,6 +43,10 @@ const TRANSLATIONS = {
       `Average expense per person: <strong>${avgFmt}</strong> (total ${totalFmt} over ${count} ${count === 1 ? 'person' : 'people'})`,
     totalCount: (n) => `${n} ${n === 1 ? 'expense' : 'expenses'}`,
     settlementTxCount: (n) => `${n} ${n === 1 ? 'transaction' : 'transactions'}`,
+    copySettlementBtn: 'Copy result',
+    copySettlementCopiedBtn: 'Copied!',
+    settlementExportLine: (from, amountFmt, to) => `${from} owes ${amountFmt} to ${to}`,
+    copySettlementError: 'Could not copy to clipboard. Please try again.',
 
     balancesSectionTitle: 'Balances',
     balEmptyHint: 'Add travelers and expenses to see the balances.',
@@ -118,6 +122,10 @@ const TRANSLATIONS = {
       `Gasto medio por persona: <strong>${avgFmt}</strong> (total ${totalFmt} entre ${count} persona${count === 1 ? '' : 's'})`,
     totalCount: (n) => `${n} gasto${n === 1 ? '' : 's'}`,
     settlementTxCount: (n) => `${n} transacción${n === 1 ? '' : 'es'}`,
+    copySettlementBtn: 'Copiar resultado',
+    copySettlementCopiedBtn: '¡Copiado!',
+    settlementExportLine: (from, amountFmt, to) => `${from} le debe ${amountFmt} a ${to}`,
+    copySettlementError: 'No se pudo copiar al portapapeles. Inténtalo de nuevo.',
 
     balancesSectionTitle: 'Saldos',
     balEmptyHint: 'Añade viajeros y gastos para ver los saldos.',
@@ -193,6 +201,10 @@ const TRANSLATIONS = {
       `Dépense moyenne par personne : <strong>${avgFmt}</strong> (total ${totalFmt} sur ${count} personne${count > 1 ? 's' : ''})`,
     totalCount: (n) => `${n} dépense${n > 1 ? 's' : ''}`,
     settlementTxCount: (n) => `${n} transaction${n > 1 ? 's' : ''}`,
+    copySettlementBtn: 'Copier le résultat',
+    copySettlementCopiedBtn: 'Copié !',
+    settlementExportLine: (from, amountFmt, to) => `${from} doit ${amountFmt} à ${to}`,
+    copySettlementError: "Impossible de copier dans le presse-papier. Merci de réessayer.",
 
     balancesSectionTitle: 'Soldes',
     balEmptyHint: 'Ajoute des voyageurs et des dépenses pour voir les soldes.',

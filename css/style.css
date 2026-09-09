@@ -345,6 +345,8 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
   border: 1px solid var(--line);
 }
 .modal-btn-secondary:hover{ background: var(--bg); }
+.settlement-copy-btn{ display:block; margin: -8px 0 16px; }
+.settlement-copy-btn.copied{ border-color: var(--teal); color: var(--teal-deep); }
 #modalConfirmBtn.modal-btn-danger{ background: var(--coral); }
 #modalConfirmBtn.modal-btn-danger:hover{ background: #cf4d3a; }
 
