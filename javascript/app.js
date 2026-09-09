@@ -511,9 +511,11 @@ function renderSettlementFilter(){
 function renderSettlement(){
   const wrap = $('settlementTickets');
   const countLine = $('settlementCount');
+  const copyBtn = $('settlementCopyBtn');
   wrap.innerHTML = '';
   if(state.people.length === 0 || state.expenses.length === 0){
     countLine.style.display = 'none';
+    copyBtn.hidden = true;
     return;
   }
   const byId = Object.fromEntries(state.people.map(p => [p.id, p.name]));
@@ -523,6 +525,7 @@ function renderSettlement(){
   }
   if(tx.length === 0){
     countLine.style.display = 'none';
+    copyBtn.hidden = true;
     const msg = settlementFilter.size > 0
       ? t('settlementEmptyFiltered')
       : t('settlementEmptyAllSettled');
@@ -531,6 +534,8 @@ function renderSettlement(){
   }
   countLine.style.display = 'block';
   countLine.textContent = t('settlementTxCount', tx.length);
+  // Exports exactly what's currently shown — the traveler filter included.
+  copyBtn.hidden = false;
   tx.forEach(txItem => {
     const el = document.createElement('div');
     el.className = 'ticket';
@@ -552,6 +557,35 @@ function renderSettlement(){
     wrap.appendChild(el);
   });
 }
+
+/* Copies just the final settlement (who owes what to whom) as plain text —
+   deliberately not the underlying expenses/balances, so nobody is tempted
+   to "double-check" by hand without accounting for each expense's own,
+   possibly different, set of participants. Matches whatever the traveler
+   filter is currently showing on screen, not necessarily the full list. */
+$('settlementCopyBtn').addEventListener('click', () => {
+  const byId = Object.fromEntries(state.people.map(p => [p.id, p.name]));
+  let tx = computeSettlement();
+  if(settlementFilter.size > 0){
+    tx = tx.filter(txItem => settlementFilter.has(txItem.from) || settlementFilter.has(txItem.to));
+  }
+  if(tx.length === 0) return;
+  const lines = tx.map(txItem =>
+    t('settlementExportLine', byId[txItem.from] || '—', fmt(txItem.amount), byId[txItem.to] || '—'));
+  const text = `${state.tripName || t('defaultTripName')}\n\n${lines.join('\n')}`;
+  const btn = $('settlementCopyBtn');
+  const originalLabel = t('copySettlementBtn');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = t('copySettlementCopiedBtn');
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = originalLabel;
+      btn.classList.remove('copied');
+    }, 1500);
+  }).catch(() => {
+    showAlert(t('copySettlementError'));
+  });
+});
 
 /* ---------- misc ---------- */
 function escapeHtml(str){
