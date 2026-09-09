@@ -510,20 +510,27 @@ function renderSettlementFilter(){
 
 function renderSettlement(){
   const wrap = $('settlementTickets');
+  const countLine = $('settlementCount');
   wrap.innerHTML = '';
-  if(state.people.length === 0 || state.expenses.length === 0) return;
+  if(state.people.length === 0 || state.expenses.length === 0){
+    countLine.style.display = 'none';
+    return;
+  }
   const byId = Object.fromEntries(state.people.map(p => [p.id, p.name]));
   let tx = computeSettlement();
   if(settlementFilter.size > 0){
     tx = tx.filter(txItem => settlementFilter.has(txItem.from) || settlementFilter.has(txItem.to));
   }
   if(tx.length === 0){
+    countLine.style.display = 'none';
     const msg = settlementFilter.size > 0
       ? t('settlementEmptyFiltered')
       : t('settlementEmptyAllSettled');
     wrap.innerHTML = `<div class="all-settled">${msg}</div>`;
     return;
   }
+  countLine.style.display = 'block';
+  countLine.textContent = t('settlementTxCount', tx.length);
   tx.forEach(txItem => {
     const el = document.createElement('div');
     el.className = 'ticket';
