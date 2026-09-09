@@ -570,8 +570,16 @@ $('settlementCopyBtn').addEventListener('click', () => {
     tx = tx.filter(txItem => settlementFilter.has(txItem.from) || settlementFilter.has(txItem.to));
   }
   if(tx.length === 0) return;
-  const lines = tx.map(txItem =>
-    t('settlementExportLine', byId[txItem.from] || '—', fmt(txItem.amount), byId[txItem.to] || '—'));
+  // A blank line between each debtor's group of lines (not between every
+  // single line) makes a long list easier to scan — tx is already grouped
+  // by "from" since that's how the settlement algorithm produces it.
+  const lines = [];
+  let previousFrom = null;
+  tx.forEach(txItem => {
+    if(previousFrom !== null && txItem.from !== previousFrom) lines.push('');
+    lines.push(t('settlementExportLine', byId[txItem.from] || '—', fmt(txItem.amount), byId[txItem.to] || '—'));
+    previousFrom = txItem.from;
+  });
   const text = `${state.tripName || t('defaultTripName')}\n\n${lines.join('\n')}`;
   const btn = $('settlementCopyBtn');
   const originalLabel = t('copySettlementBtn');
