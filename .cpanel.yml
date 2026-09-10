@@ -1,7 +1,8 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/tape2497/public_html/
+    - export DEPLOYPATH=/home/tape2497/vacances.tape2497.odns.fr/
+    - /bin/mkdir -p $DEPLOYPATH
     - /bin/cp -R css $DEPLOYPATH
     - /bin/cp -R javascript $DEPLOYPATH
     - /bin/cp -R i18n $DEPLOYPATH
