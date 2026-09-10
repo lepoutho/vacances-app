@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/tape2497/public_html/
+    - /bin/cp -R css $DEPLOYPATH
+    - /bin/cp -R javascript $DEPLOYPATH
+    - /bin/cp -R i18n $DEPLOYPATH
+    - /bin/cp -R html/* $DEPLOYPATH
