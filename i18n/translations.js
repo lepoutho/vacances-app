@@ -12,7 +12,7 @@ const TRANSLATIONS = {
     resetBtn: '↺ Reset',
 
     peopleSectionTitle: 'Travelers',
-    personNamePlaceholder: 'First name (e.g. Thomas-and-Marie)',
+    personNamePlaceholder: 'First name (e.g. Thomas)',
     representsLabel: 'represents',
     personSizeTitle: 'Number of people represented',
     addPersonBtn: 'Add',
@@ -93,7 +93,7 @@ const TRANSLATIONS = {
     resetBtn: '↺ Reiniciar',
 
     peopleSectionTitle: 'Viajeros',
-    personNamePlaceholder: 'Nombre (ej: Thomas-y-Marie)',
+    personNamePlaceholder: 'Nombre (ej: Thomas)',
     representsLabel: 'representa',
     personSizeTitle: 'Número de personas representadas',
     addPersonBtn: 'Añadir',
@@ -174,7 +174,7 @@ const TRANSLATIONS = {
     resetBtn: '↺ Réinitialiser',
 
     peopleSectionTitle: 'Voyageurs',
-    personNamePlaceholder: 'Prénom (ex: Thomas-et-Marie)',
+    personNamePlaceholder: 'Prénom (ex : Thomas)',
     representsLabel: 'représente',
     personSizeTitle: 'Nombre de personnes représentées',
     addPersonBtn: 'Ajouter',
