@@ -7,8 +7,8 @@ const TRANSLATIONS = {
     pageTitle: 'Vacations — Expense sharing',
     airlineMark: 'Vacations',
     defaultTripName: 'Our vacation',
-    exportBtn: '⬇ Save .json file',
-    importBtn: '⬆ Open .json file',
+    exportBtn: '⬇ Save my trip',
+    importBtn: '⬆ Load my trip',
     resetBtn: '↺ Reset',
 
     peopleSectionTitle: 'Travelers',
@@ -69,7 +69,7 @@ const TRANSLATIONS = {
     importInvalidFile: 'This file does not look like a valid Vacances app save.',
     duplicateNameWarning: (name) => `"${name}" has already been added. Please choose a different name so travelers stay distinguishable.`,
     joinExpensesPartialNote: 'Expenses shown in red were not shared by everyone already on the trip — check whether you should be included in them too.',
-    importParseError: 'Unable to read this JSON file.',
+    importParseError: 'Unable to read this save file.',
     resetConfirm: 'Resetting will erase all travelers, expenses, and the trip name. This action cannot be undone. Continue?',
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
       `"${desc}" (${amountFmt}) won't be shared by everyone.\nPaid by ${payer} · shared between ${shares}.\n\nContinue?`,
@@ -79,6 +79,8 @@ const TRANSLATIONS = {
 
     joinExpensesIntro: "Please select the expenses you'd like to join. If none, leave them unselected.",
     joinExpensesListLabel: 'Existing expenses',
+    joinExpensesLevelTitle: 'Participation level for this expense',
+    joinExpensesLevelLabel: 'Participation',
     joinExpensesConfirmBtn: 'Confirm'
   },
 
@@ -86,8 +88,8 @@ const TRANSLATIONS = {
     pageTitle: 'Vacaciones — Reparto de gastos',
     airlineMark: 'Vacaciones',
     defaultTripName: 'Nuestras vacaciones',
-    exportBtn: '⬇ Guardar archivo .json',
-    importBtn: '⬆ Abrir archivo .json',
+    exportBtn: '⬇ Guardar mi viaje',
+    importBtn: '⬆ Cargar mi viaje',
     resetBtn: '↺ Reiniciar',
 
     peopleSectionTitle: 'Viajeros',
@@ -148,7 +150,7 @@ const TRANSLATIONS = {
     importInvalidFile: 'Este archivo no parece ser una copia de seguridad válida de la app Vacaciones.',
     duplicateNameWarning: (name) => `"${name}" ya ha sido añadido. Elige un nombre diferente para que los viajeros sigan siendo distinguibles.`,
     joinExpensesPartialNote: 'Los gastos en rojo no fueron compartidos por todos los que ya estaban en el viaje — comprueba si también deberías participar en ellos.',
-    importParseError: 'No se pudo leer este archivo JSON.',
+    importParseError: 'No se pudo leer este archivo de guardado.',
     resetConfirm: 'Reiniciar borrará todos los viajeros, gastos y el nombre del viaje. Esta acción no se puede deshacer. ¿Continuar?',
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
       `"${desc}" (${amountFmt}) no se compartirá entre todos.\nPagado por ${payer} · compartido entre ${shares}.\n\n¿Continuar?`,
@@ -158,6 +160,8 @@ const TRANSLATIONS = {
 
     joinExpensesIntro: 'Selecciona los gastos en los que quieres participar. Si ninguno, no selecciones nada.',
     joinExpensesListLabel: 'Gastos existentes',
+    joinExpensesLevelTitle: 'Nivel de participación en este gasto',
+    joinExpensesLevelLabel: 'Participación',
     joinExpensesConfirmBtn: 'Confirmar'
   },
 
@@ -165,8 +169,8 @@ const TRANSLATIONS = {
     pageTitle: 'Vacances — Partage des dépenses',
     airlineMark: 'Vacances',
     defaultTripName: 'Nos vacances',
-    exportBtn: '⬇ Enregistrer le fichier .json',
-    importBtn: '⬆ Ouvrir le fichier .json',
+    exportBtn: '⬇ Sauvegarder mon voyage',
+    importBtn: '⬆ Charger mon voyage',
     resetBtn: '↺ Réinitialiser',
 
     peopleSectionTitle: 'Voyageurs',
@@ -227,7 +231,7 @@ const TRANSLATIONS = {
     importInvalidFile: "Ce fichier ne semble pas être une sauvegarde valide de l'appli Vacances.",
     duplicateNameWarning: (name) => `« ${name} » a déjà été ajouté. Merci de choisir un nom différent pour que les voyageurs restent identifiables.`,
     joinExpensesPartialNote: "Les dépenses en rouge n'ont pas été partagées par tous les voyageurs déjà présents — vérifie si tu devrais y être inclus toi aussi.",
-    importParseError: 'Impossible de lire ce fichier JSON.',
+    importParseError: 'Impossible de lire ce fichier de sauvegarde.',
     resetConfirm: 'Réinitialiser va effacer tous les voyageurs, dépenses et le nom du voyage. Cette action est irréversible. Continuer ?',
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
       `« ${desc} » (${amountFmt}) ne sera pas partagée par tout le monde.\nPayée par ${payer} · partagée entre ${shares}.\n\nContinuer ?`,
@@ -237,6 +241,8 @@ const TRANSLATIONS = {
 
     joinExpensesIntro: 'Merci de sélectionner les dépenses auxquelles vous voulez participer. Si aucune, ne rien sélectionner.',
     joinExpensesListLabel: 'Dépenses existantes',
+    joinExpensesLevelTitle: 'Niveau de participation à cette dépense',
+    joinExpensesLevelLabel: 'Participation',
     joinExpensesConfirmBtn: 'Valider'
   }
 };

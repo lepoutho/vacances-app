@@ -361,13 +361,13 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
   overflow-y: auto;
 }
 .join-expense-row{
-  display:flex; align-items:center; gap:10px;
+  display:flex; align-items:flex-start; gap:10px;
   padding: 10px 14px;
   font-size: 14px;
-  cursor: pointer;
 }
 .join-expense-row:hover{ background: var(--bg); }
-.join-expense-row input[type="checkbox"]{
+.join-expense-label{ flex:1; display:flex; align-items:flex-start; gap:10px; cursor: pointer; min-width:0; }
+.join-expense-label input[type="checkbox"]{
   width: 16px; height: 16px; flex: none; accent-color: var(--teal);
   align-self: flex-start; margin-top: 3px;
 }
@@ -379,6 +379,13 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
 .join-expense-row-partial{ background: rgba(232,96,76,0.07); }
 .join-expense-row-partial:hover{ background: rgba(232,96,76,0.12); }
 .join-expense-row-partial .join-expense-desc{ color: var(--coral); }
+.join-expense-level{ display:flex; align-items:center; gap:4px; flex: none; margin-top: -3px; }
+.join-expense-level[hidden]{ display:none; }
+.join-expense-level input{
+  width: 52px; padding: 4px 6px; text-align:right; font-size: 13px;
+}
+.join-expense-level-suffix{ font-size: 13px; color: var(--ink-soft); }
+.join-expense-level-label{ font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
 .join-expense-all{
   font-weight: 600;
   border-bottom: 1px solid var(--line);
