@@ -379,12 +379,17 @@ function computeTotals(){
   return totals;
 }
 
-/* True only when every expense is shared between all current travelers —
-   otherwise a single "average per person" figure is misleading (e.g. one
-   expense split among 2 of 4 people skews it), so the line stays hidden. */
+/* True only when every expense is shared, at full 100% participation,
+   between all current travelers — otherwise a single "average per person"
+   figure is misleading (e.g. one expense split among 2 of 4 people, or
+   someone counted at a reduced participation level, skews it), so the
+   line stays hidden. */
 function allExpensesShareEveryone(){
   if(state.expenses.length === 0) return false;
-  return state.expenses.every(exp => exp.participants.length === state.people.length);
+  return state.expenses.every(exp =>
+    exp.participants.length === state.people.length &&
+    (!exp.participationLevels || Object.keys(exp.participationLevels).length === 0)
+  );
 }
 
 function renderTotals(){
