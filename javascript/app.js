@@ -417,17 +417,32 @@ function renderTotals(){
 }
 
 /* ---------- Balances ---------- */
+/* A participant's weight on one expense = their headcount (personSize)
+   times their participation level for *that* expense (1 = 100% by
+   default). Only set below 1 for someone who joined partway through and
+   chose a reduced level in the "join expenses" catch-up modal — absent
+   for every ordinary participant, so this stays a no-op almost always. */
+function participantWeight(exp, pid, sizeById){
+  const size = sizeById[pid] || 0;
+  const level = (exp.participationLevels && exp.participationLevels[pid] !== undefined)
+    ? exp.participationLevels[pid] : 1;
+  return size * level;
+}
+
 function computeBalances(){
   const balance = {};
   const sizeById = {};
   state.people.forEach(p => { balance[p.id] = 0; sizeById[p.id] = personSize(p); });
   state.expenses.forEach(exp => {
-    // Each participant's share is weighted by how many people they represent,
-    // so a traveler entry covering 2 people pays twice the share of one covering 1.
-    const totalWeight = exp.participants.reduce((s, pid) => s + (sizeById[pid] || 0), 0);
+    // Each participant's share is weighted by their headcount and, if set,
+    // their reduced participation level — so someone at 50% pays half of
+    // what a full participant of the same size would, and that missing
+    // half is naturally absorbed by the others in proportion to their own
+    // weight, since shares are computed as weight / totalWeight.
+    const totalWeight = exp.participants.reduce((s, pid) => s + participantWeight(exp, pid, sizeById), 0);
     if(totalWeight <= 0) return;
     exp.participants.forEach(pid => {
-      const weight = sizeById[pid] || 0;
+      const weight = participantWeight(exp, pid, sizeById);
       if(pid in balance) balance[pid] -= exp.amount * weight / totalWeight;
     });
     if(exp.payer in balance) balance[exp.payer] += exp.amount;
