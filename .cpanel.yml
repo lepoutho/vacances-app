@@ -1,7 +1,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/tape2497/vacances.tape2497.odns.fr/
+    - export DEPLOYPATH=/home/tape2497/vacances.teodul.fr/
     - /bin/mkdir -p $DEPLOYPATH
     - /bin/cp -R css $DEPLOYPATH
     - /bin/cp -R javascript $DEPLOYPATH
