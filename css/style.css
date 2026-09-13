@@ -417,6 +417,21 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
 .level-step-btn:hover{ background:var(--line); color:var(--ink); }
 .level-step-btn:first-child{ border-right:1px solid var(--line); }
 .level-step-btn:last-child{ border-left:1px solid var(--line); }
+/* On a device with a precise pointer (a mouse/trackpad — real desktops, and
+   any desktop browser window regardless of how narrow it's resized), the
+   native number-spinner arrows work fine, so go back to the plain bordered
+   input instead of the custom stepper. Only devices without one (touchscreens
+   — phones and tablets) keep it, since that's where the native arrows don't
+   render at all. Width-based breakpoints would get this wrong (a narrowed
+   desktop window isn't touch), so this checks the pointer itself instead. */
+@media (hover: hover) and (pointer: fine){
+  .level-stepper{ display:contents; }
+  .level-step-btn{ display:none; }
+  .level-stepper input{
+    border:1px solid var(--line); border-radius:9px; background:var(--bg);
+    width:52px; padding:4px 6px; text-align:right;
+  }
+}
 /* Keeping "Participation …%" on the same line as the description/amount
    (the desktop layout, aligned via a negative margin) only works with
    room to spare — on an actual phone it crowds out the description,
