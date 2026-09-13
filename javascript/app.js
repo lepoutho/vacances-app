@@ -269,6 +269,7 @@ function addExpense(desc, amount, payer, participants){
   $('expenseAmount').value = '';
   save(); render();
   $('expenseDesc').focus();
+  if(isTouchDevice()) showToast(t('expenseAddedToast'));
 }
 
 $('expenseForm').addEventListener('submit', (e) => {
@@ -622,6 +623,32 @@ $('settlementCopyBtn').addEventListener('click', () => {
 /* ---------- misc ---------- */
 function escapeHtml(str){
   return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+// Same touch-vs-mouse detection used for the participation-level stepper —
+// see the CSS media query in style.css for the reasoning.
+function isTouchDevice(){
+  return matchMedia('(hover: none), (pointer: coarse)').matches;
+}
+
+// Brief status message pinned to the top of the screen (above where an
+// on-screen keyboard sits), shown only on touch devices: after adding an
+// expense there, the keyboard covers the list below, so nothing on screen
+// otherwise confirms the add actually went through.
+let toastShowTimeoutId = null;
+let toastHideTimeoutId = null;
+function showToast(message){
+  const el = $('toast');
+  el.textContent = message;
+  el.hidden = false;
+  void el.offsetWidth; // force reflow so the fade-in replays if already visible
+  el.classList.add('toast-visible');
+  clearTimeout(toastShowTimeoutId);
+  clearTimeout(toastHideTimeoutId);
+  toastShowTimeoutId = setTimeout(() => {
+    el.classList.remove('toast-visible');
+    toastHideTimeoutId = setTimeout(() => { el.hidden = true; }, 250);
+  }, 2000);
 }
 
 // Custom +/- buttons for participation-level percentage inputs (join-expenses
