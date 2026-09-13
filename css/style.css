@@ -433,13 +433,16 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
   }
 }
 /* Keeping "Participation …%" on the same line as the description/amount
-   (the desktop layout, aligned via a negative margin) only works with
-   room to spare — on an actual phone it crowds out the description,
-   forcing it to wrap and overlap the row above. Stack it on its own
-   full-width line below instead. */
-@media (max-width: 480px){
+   (the desktop layout, aligned via a negative margin) only works with room
+   to spare — on a touch device it crowds out the description, forcing it to
+   wrap and overlap the row above (made worse by the wider +/- stepper shown
+   there). Stack it on its own full-width line below instead. Tied to the
+   same touch detection as the stepper itself, not a screen-width breakpoint:
+   the popup's own width doesn't change between phone and tablet, so a tablet
+   needs the exact same stacking as a phone despite its much wider screen. */
+@media (hover: none), (pointer: coarse){
   .join-expense-row:not(.join-expense-all){ flex-direction: column; align-items: stretch; }
-  .join-expense-level{ margin-top: 2px; margin-left: 26px; }
+  .join-expense-level{ margin-top: 2px; justify-content: center; }
 }
 .join-expense-level-label{ font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
 .join-expense-all{
