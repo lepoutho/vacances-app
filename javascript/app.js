@@ -624,6 +624,19 @@ function escapeHtml(str){
   return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
 }
 
+// Custom +/- buttons for participation-level percentage inputs (join-expenses
+// & edit-expense modals): native number-input spinner arrows don't render on
+// mobile browsers, so these give a tappable equivalent everywhere, respecting
+// the input's own min/max/step.
+function stepLevelInput(input, delta){
+  const min = parseInt(input.min, 10) || 5;
+  const max = parseInt(input.max, 10) || 100;
+  let val = parseInt(input.value, 10);
+  if(!Number.isFinite(val)) val = 100;
+  val = Math.min(max, Math.max(min, val + delta));
+  input.value = String(val);
+}
+
 $('tripName').addEventListener('input', (e) => { state.tripName = e.target.value; save(); });
 
 /* ---------- Export / Import JSON file ---------- */
