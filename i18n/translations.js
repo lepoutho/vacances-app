@@ -81,7 +81,9 @@ const TRANSLATIONS = {
     joinExpensesListLabel: 'Existing expenses',
     joinExpensesLevelTitle: 'Participation level for this expense',
     joinExpensesLevelLabel: 'Participation',
-    joinExpensesConfirmBtn: 'Confirm'
+    joinExpensesConfirmBtn: 'Confirm',
+
+    expenseAddedToast: 'Expense added'
   },
 
   es: {
@@ -162,7 +164,9 @@ const TRANSLATIONS = {
     joinExpensesListLabel: 'Gastos existentes',
     joinExpensesLevelTitle: 'Nivel de participación en este gasto',
     joinExpensesLevelLabel: 'Participación',
-    joinExpensesConfirmBtn: 'Confirmar'
+    joinExpensesConfirmBtn: 'Confirmar',
+
+    expenseAddedToast: 'Gasto añadido'
   },
 
   fr: {
@@ -243,7 +247,9 @@ const TRANSLATIONS = {
     joinExpensesListLabel: 'Dépenses existantes',
     joinExpensesLevelTitle: 'Niveau de participation à cette dépense',
     joinExpensesLevelLabel: 'Participation',
-    joinExpensesConfirmBtn: 'Valider'
+    joinExpensesConfirmBtn: 'Valider',
+
+    expenseAddedToast: 'Dépense ajoutée'
   }
 };
 
