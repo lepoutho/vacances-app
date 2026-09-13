@@ -183,6 +183,13 @@ button:active{ transform: scale(0.97); }
 .row2{ display:flex; gap: 8px; }
 .row2 input{ flex:1; }
 .row2 select{ min-width: 0; flex-shrink: 1; }
+/* Side by side, "Montant €" and "Payé par …" never both fit on an actual
+   phone screen once a payer's name is more than a couple of letters —
+   the select ends up squeezed down to just "Payé", unreadable. Below
+   phone width, stack them instead so each gets the full row. */
+@media (max-width: 480px){
+  .row2{ flex-direction: column; }
+}
 
 .chip-list{ display:flex; flex-wrap:wrap; gap:6px; margin: 2px 0 4px; }
 .chip{
@@ -308,6 +315,18 @@ button:active{ transform: scale(0.97); }
   font-variant-numeric: tabular-nums;
 }
 .t-to{ text-align:right; align-items:flex-end; }
+
+/* The 3-column ticket (from | arrow+amount | to) needs real width for
+   two names plus an amount side by side — on an actual phone screen
+   this overflowed and got clipped. Stack it vertically instead; the
+   decorative dashed "ticket stub" line only made sense as a horizontal
+   divider, so it's dropped rather than reflowed. */
+@media (max-width: 480px){
+  .ticket{ grid-template-columns: 1fr; text-align:center; row-gap: 6px; }
+  .ticket::before, .ticket::after, .ticket-stub-line{ display:none; }
+  .t-from, .t-to{ align-items:center; text-align:center; }
+  .t-mid{ padding: 4px 0; }
+}
 
 .all-settled{
   text-align:center; padding: 26px; color: var(--ink-soft); font-size: 14px;
