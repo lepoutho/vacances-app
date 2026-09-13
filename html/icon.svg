@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#142B3D"/>
+  <!-- classic paper-plane glyph, centered with generous margin so
+       Android's adaptive-icon mask (circle/squircle crop) never clips it -->
+  <g transform="translate(256 256) scale(13) translate(-12 -12)">
+    <polygon points="22 2 15 22 11 13 2 9 22 2" fill="#F2A93B"/>
+  </g>
+</svg>
