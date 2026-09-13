@@ -314,8 +314,10 @@ function renderExpensePayerFilter(){
     chip.className = 'chip chip-filter' + (expensePayerFilter.has(p.id) ? ' active' : '');
     chip.textContent = p.name;
     chip.onclick = () => {
-      if(expensePayerFilter.has(p.id)) expensePayerFilter.delete(p.id);
-      else expensePayerFilter.add(p.id);
+      // Exclusive filter: picking a name replaces the current selection
+      // entirely — either "Tous", or exactly one traveler, never several.
+      expensePayerFilter.clear();
+      expensePayerFilter.add(p.id);
       renderExpensePayerFilter();
       renderExpenses();
     };
@@ -519,8 +521,10 @@ function renderSettlementFilter(){
     chip.className = 'chip chip-filter' + (settlementFilter.has(p.id) ? ' active' : '');
     chip.textContent = p.name;
     chip.onclick = () => {
-      if(settlementFilter.has(p.id)) settlementFilter.delete(p.id);
-      else settlementFilter.add(p.id);
+      // Exclusive filter: picking a name replaces the current selection
+      // entirely — either "Tous", or exactly one traveler, never several.
+      settlementFilter.clear();
+      settlementFilter.add(p.id);
       renderSettlementFilter();
       renderSettlement();
     };
