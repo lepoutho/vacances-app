@@ -408,7 +408,7 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
    don't render on mobile browsers, so this gives a tappable equivalent
    that behaves the same on every platform. */
 .level-stepper{ display:flex; align-items:stretch; border:1px solid var(--line); border-radius:9px; overflow:hidden; }
-.level-stepper input{ border:none; border-radius:0; width:46px; padding:4px 3px; }
+.level-stepper input{ border:none; border-radius:0; width:46px; padding:4px 3px; text-align:center; }
 .level-step-btn{
   border:none; background:var(--bg); color:var(--ink-soft);
   width:24px; flex:none; font-size:15px; line-height:1; cursor:pointer;

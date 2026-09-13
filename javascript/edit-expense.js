@@ -80,6 +80,7 @@ function renderEditExpenseParticipants(existingLevels){
     levelInput.value = String(levelPercent);
     levelInput.title = t('joinExpensesLevelTitle');
     levelInput.setAttribute('data-person-id', p.id);
+    levelInput.addEventListener('blur', clampLevelInputOnBlur);
 
     const stepper = document.createElement('div');
     stepper.className = 'level-stepper';
@@ -158,9 +159,7 @@ $('editExpenseSaveBtn').addEventListener('click', () => {
     participants.forEach(pid => {
       const input = document.querySelector(`.edit-expense-level-input[data-person-id="${pid}"]`);
       if(!input) return;
-      let level = parseInt(input.value, 10);
-      if(!Number.isFinite(level) || level < 1) level = 100;
-      if(level > 100) level = 100;
+      const level = clampLevelValue(parseInt(input.value, 10), input);
       if(level !== 100) newLevels[pid] = level / 100;
     });
     if(Object.keys(newLevels).length > 0) exp.participationLevels = newLevels;
