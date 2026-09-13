@@ -92,6 +92,12 @@ $('joinExpensesItems').addEventListener('click', (e) => {
   stepLevelInput(input, parseInt(btn.getAttribute('data-step'), 10));
 });
 
+// 'blur' doesn't bubble, but it does fire during the capture phase — this
+// still works as delegation even though the rows are rebuilt on every render.
+$('joinExpensesItems').addEventListener('blur', (e) => {
+  if(e.target.matches('.join-expense-level-input')) clampLevelInputOnBlur(e);
+}, true);
+
 $('joinExpensesConfirmBtn').addEventListener('click', () => {
   if(joinExpensesPersonId){
     const checkedBoxes = Array.from(document.querySelectorAll('#joinExpensesItems input[type="checkbox"]:checked'));
@@ -101,9 +107,7 @@ $('joinExpensesConfirmBtn').addEventListener('click', () => {
       if(!exp || exp.participants.includes(joinExpensesPersonId)) return;
       exp.participants.push(joinExpensesPersonId);
       const levelInput = cb.closest('.join-expense-row').querySelector('.join-expense-level-input');
-      let level = parseInt(levelInput.value, 10);
-      if(!Number.isFinite(level) || level < 1) level = 100;
-      if(level > 100) level = 100;
+      const level = clampLevelValue(parseInt(levelInput.value, 10), levelInput);
       if(level !== 100){
         exp.participationLevels = exp.participationLevels || {};
         exp.participationLevels[joinExpensesPersonId] = level / 100;

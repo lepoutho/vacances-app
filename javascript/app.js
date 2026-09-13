@@ -628,13 +628,23 @@ function escapeHtml(str){
 // & edit-expense modals): native number-input spinner arrows don't render on
 // mobile browsers, so these give a tappable equivalent everywhere, respecting
 // the input's own min/max/step.
-function stepLevelInput(input, delta){
+function clampLevelValue(val, input){
   const min = parseInt(input.min, 10) || 5;
   const max = parseInt(input.max, 10) || 100;
+  if(!Number.isFinite(val)) val = 100;
+  return Math.min(max, Math.max(min, val));
+}
+function stepLevelInput(input, delta){
   let val = parseInt(input.value, 10);
   if(!Number.isFinite(val)) val = 100;
-  val = Math.min(max, Math.max(min, val + delta));
-  input.value = String(val);
+  input.value = String(clampLevelValue(val + delta, input));
+}
+// Typing is free-form (so "1" then "0" then "0" can become 100 without being
+// snapped back after the first digit) — the value is only reined back inside
+// [min, max] once the field loses focus, same as a native spinner would.
+function clampLevelInputOnBlur(e){
+  const input = e.target;
+  input.value = String(clampLevelValue(parseInt(input.value, 10), input));
 }
 
 $('tripName').addEventListener('input', (e) => { state.tripName = e.target.value; save(); });
