@@ -51,6 +51,7 @@
 
     <section class="panel panel-expense">
       <h2 data-i18n="expenseSectionTitle">Nouvelle dépense</h2>
+      <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
       <form id="expenseForm">
         <input id="expenseDesc" placeholder="Ex: Restaurant, essence, logement…" data-i18n-placeholder="expenseDescPlaceholder" required/>
         <div class="row2">
@@ -99,8 +100,6 @@
 
   <footer data-i18n="footerText">Les données de ce voyage restent enregistrées dans ton navigateur.</footer>
 </div>
-
-<div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
 
 <div class="modal-overlay" id="modalOverlay" hidden>
   <div class="modal-box" role="alertdialog" aria-modal="true">
