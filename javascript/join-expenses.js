@@ -38,7 +38,11 @@ function renderJoinExpensesItems(){
       </label>
       <div class="join-expense-level" hidden>
         <span class="join-expense-level-label">${escapeHtml(t('joinExpensesLevelLabel'))}</span>
-        <input type="number" class="join-expense-level-input" min="5" max="100" step="5" value="100" title="${escapeHtml(t('joinExpensesLevelTitle'))}"/>
+        <div class="level-stepper">
+          <button type="button" class="level-step-btn" data-step="-5" aria-label="-5%">−</button>
+          <input type="number" class="join-expense-level-input" min="5" max="100" step="5" value="100" title="${escapeHtml(t('joinExpensesLevelTitle'))}"/>
+          <button type="button" class="level-step-btn" data-step="5" aria-label="+5%">+</button>
+        </div>
         <span class="join-expense-level-suffix">%</span>
       </div>
     `;
@@ -79,6 +83,13 @@ $('joinExpensesItems').addEventListener('change', (e) => {
     updateJoinExpensesAllCheckbox();
     e.target.closest('.join-expense-row').querySelector('.join-expense-level').hidden = !e.target.checked;
   }
+});
+
+$('joinExpensesItems').addEventListener('click', (e) => {
+  const btn = e.target.closest('.level-step-btn');
+  if(!btn) return;
+  const input = btn.parentElement.querySelector('.join-expense-level-input');
+  stepLevelInput(input, parseInt(btn.getAttribute('data-step'), 10));
 });
 
 $('joinExpensesConfirmBtn').addEventListener('click', () => {

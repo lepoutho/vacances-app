@@ -80,11 +80,30 @@ function renderEditExpenseParticipants(existingLevels){
     levelInput.value = String(levelPercent);
     levelInput.title = t('joinExpensesLevelTitle');
     levelInput.setAttribute('data-person-id', p.id);
+
+    const stepper = document.createElement('div');
+    stepper.className = 'level-stepper';
+    const minusBtn = document.createElement('button');
+    minusBtn.type = 'button';
+    minusBtn.className = 'level-step-btn';
+    minusBtn.textContent = '−';
+    minusBtn.setAttribute('aria-label', '-5%');
+    minusBtn.addEventListener('click', () => stepLevelInput(levelInput, -5));
+    const plusBtn = document.createElement('button');
+    plusBtn.type = 'button';
+    plusBtn.className = 'level-step-btn';
+    plusBtn.textContent = '+';
+    plusBtn.setAttribute('aria-label', '+5%');
+    plusBtn.addEventListener('click', () => stepLevelInput(levelInput, 5));
+    stepper.appendChild(minusBtn);
+    stepper.appendChild(levelInput);
+    stepper.appendChild(plusBtn);
+
     const levelSuffix = document.createElement('span');
     levelSuffix.className = 'join-expense-level-suffix';
     levelSuffix.textContent = '%';
     levelWrap.appendChild(levelLabel);
-    levelWrap.appendChild(levelInput);
+    levelWrap.appendChild(stepper);
     levelWrap.appendChild(levelSuffix);
 
     checkbox.addEventListener('change', () => {
