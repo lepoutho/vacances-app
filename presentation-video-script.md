@@ -57,6 +57,11 @@ Avant de lancer l'enregistrement : réinitialise l'app une fois (bouton
   automatiquement.
 - Montrer que les dépenses **non partagées par tous** apparaissent
   en **rouge**, avec un message qui explique pourquoi.
+- Cocher une dépense → un champ **"Participation"** apparaît (100%
+  par défaut). Expliquer que si le voyageur n'a rejoint que pour une
+  partie du séjour, on peut réduire sa part sur cette dépense précise
+  (ex: 50%) au lieu de la compter en entier — utile par exemple pour
+  quelqu'un qui arrive au jour 5 d'une location de 10 jours.
 - Cocher une ou deux dépenses (ou "Tous"), cliquer Valider.
 - Dire clairement à quoi ça sert : rattraper un voyageur qui rejoint
   après coup sur les dépenses passées, sans tout recalculer à la main.
@@ -64,7 +69,10 @@ Avant de lancer l'enregistrement : réinitialise l'app une fois (bouton
 ## 7. Le tableau "Dépenses" (totaux par personne)
 
 - Montrer que seuls ceux qui ont payé quelque chose apparaissent.
-- Si applicable, montrer la moyenne par personne en haut.
+- Montrer la ligne du haut : la moyenne par personne si tout est
+  partagé à 100% par tout le monde, sinon juste le total — le message
+  s'adapte tout seul pour rester toujours exact (avec la dépense
+  partielle du 5, on devrait voir la version "total" ici).
 
 ## 8. Les Soldes
 
