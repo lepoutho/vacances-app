@@ -400,15 +400,20 @@ function renderTotals(){
   wrap.innerHTML = '';
   const hasData = state.people.length > 0 && state.expenses.length > 0;
   $('totalsEmptyHint').style.display = hasData ? 'none' : 'block';
-  const showAvg = hasData && allExpensesShareEveryone();
-  $('avgLine').style.display = showAvg ? 'block' : 'none';
+  $('avgLine').style.display = hasData ? 'block' : 'none';
   if(!hasData) return;
   const totals = computeTotals();
-  if(showAvg){
-    const totalAmount = state.expenses.reduce((s, e) => s + e.amount, 0);
-    const totalPeopleCount = countPeople();
+  const totalAmount = state.expenses.reduce((s, e) => s + e.amount, 0);
+  const totalPeopleCount = countPeople();
+  // The average-per-person figure is only meaningful once every expense is
+  // shared, at full participation, by everyone — otherwise it's misleading
+  // (e.g. one expense split among 2 of 4 people). In that case, fall back to
+  // just the "total X over N people" part, which stays correct regardless.
+  if(allExpensesShareEveryone()){
     const avg = totalAmount / totalPeopleCount;
     $('avgLine').innerHTML = t('avgLine', fmt(avg), fmt(totalAmount), totalPeopleCount);
+  } else {
+    $('avgLine').innerHTML = t('totalOnlyLine', fmt(totalAmount), totalPeopleCount);
   }
   // Only travelers who actually paid for something get a row here — a
   // "0 dépense · 0,00 €" line for someone who hasn't spent anything yet
