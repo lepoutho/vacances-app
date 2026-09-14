@@ -47,14 +47,15 @@ const TRANSLATIONS = {
     settlementTxCount: (n) => `${n} ${n === 1 ? 'transaction' : 'transactions'}`,
     copySettlementBtn: 'Copy result',
     copySettlementCopiedBtn: 'Copied!',
-    settlementExportLine: (from, amountFmt, to) => `${from} owes ${amountFmt} to ${to}`,
+    settlementExportLine: (from, amountFmt, to, isFromPlural) =>
+      `${from} ${isFromPlural ? 'owe' : 'owes'} ${amountFmt} to ${to}`,
     copySettlementError: 'Could not copy to clipboard. Please try again.',
 
     balancesSectionTitle: 'Balances',
     balEmptyHint: 'Add travelers and expenses to see the balances.',
     balanceUpToDate: 'settled up',
-    balanceOwesReceive: 'is owed',
-    balanceOwes: 'owes',
+    balanceOwesReceive: (isPlural) => isPlural ? 'are owed' : 'is owed',
+    balanceOwes: (isPlural) => isPlural ? 'owe' : 'owes',
 
     settlementSectionTitle: 'To settle up',
     filterByTravelerLabel: 'Filter by traveler',
@@ -132,14 +133,15 @@ const TRANSLATIONS = {
     settlementTxCount: (n) => `${n} transacción${n === 1 ? '' : 'es'}`,
     copySettlementBtn: 'Copiar resultado',
     copySettlementCopiedBtn: '¡Copiado!',
-    settlementExportLine: (from, amountFmt, to) => `${from} le debe ${amountFmt} a ${to}`,
+    settlementExportLine: (from, amountFmt, to, isFromPlural, isToPlural) =>
+      `${from} ${isToPlural ? 'les' : 'le'} ${isFromPlural ? 'deben' : 'debe'} ${amountFmt} a ${to}`,
     copySettlementError: 'No se pudo copiar al portapapeles. Inténtalo de nuevo.',
 
     balancesSectionTitle: 'Saldos',
     balEmptyHint: 'Añade viajeros y gastos para ver los saldos.',
     balanceUpToDate: 'al día',
-    balanceOwesReceive: 'debe recibir',
-    balanceOwes: 'debe',
+    balanceOwesReceive: (isPlural) => isPlural ? 'deben recibir' : 'debe recibir',
+    balanceOwes: (isPlural) => isPlural ? 'deben' : 'debe',
 
     settlementSectionTitle: 'Para saldar cuentas',
     filterByTravelerLabel: 'Filtrar por viajero',
@@ -217,14 +219,15 @@ const TRANSLATIONS = {
     settlementTxCount: (n) => `${n} transaction${n > 1 ? 's' : ''}`,
     copySettlementBtn: 'Copier le résultat',
     copySettlementCopiedBtn: 'Copié !',
-    settlementExportLine: (from, amountFmt, to) => `${from} doit ${amountFmt} à ${to}`,
+    settlementExportLine: (from, amountFmt, to, isFromPlural) =>
+      `${from} ${isFromPlural ? 'doivent' : 'doit'} ${amountFmt} à ${to}`,
     copySettlementError: "Impossible de copier dans le presse-papier. Merci de réessayer.",
 
     balancesSectionTitle: 'Soldes',
     balEmptyHint: 'Ajoute des voyageurs et des dépenses pour voir les soldes.',
     balanceUpToDate: 'à jour',
-    balanceOwesReceive: 'doit recevoir',
-    balanceOwes: 'doit',
+    balanceOwesReceive: (isPlural) => isPlural ? 'doivent recevoir' : 'doit recevoir',
+    balanceOwes: (isPlural) => isPlural ? 'doivent' : 'doit',
 
     settlementSectionTitle: 'Pour équilibrer les comptes',
     filterByTravelerLabel: 'Filtrer par voyageur',

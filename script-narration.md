@@ -118,9 +118,19 @@ qui s'ouvre automatiquement]**
 > prévient explicitement pour que je vérifie si le nouvel arrivant
 > doit vraiment y être inclus ou non.
 
-**[Action : cocher les dépenses concernées, ou "Tous", puis Valider]**
+**[Action : cocher une des dépenses concernées — le champ
+"Participation" apparaît, à 100% par défaut]**
 
-> Je coche celles qui le concernent, je valide, et ses parts sont
+> Et il y a un réglage en plus dès que je coche une dépense : ce champ
+> "Participation". Si la personne n'était présente qu'une partie du
+> temps sur cette dépense-là — par exemple elle arrive le jour 5 d'une
+> location de 10 jours — je peux réduire sa part ici, disons à 50%,
+> plutôt que de la compter en entier comme tout le monde.
+
+**[Action : cocher les autres dépenses concernées, ou "Tous", puis
+Valider]**
+
+> Je coche celles qui la concernent, je valide, et ses parts sont
 > automatiquement recalculées sur les dépenses choisies — sans avoir
 > à modifier chaque dépense une par une à la main.
 
@@ -131,6 +141,13 @@ qui s'ouvre automatiquement]**
 > Un peu plus bas, le tableau "Dépenses" récapitule combien chaque
 > personne a payé au total. Seules celles qui ont réellement avancé
 > de l'argent apparaissent ici, pour ne pas encombrer l'affichage.
+>
+> Vous voyez cette ligne juste au-dessus ? Elle affiche la dépense
+> moyenne par personne quand tout est partagé équitablement — mais
+> comme on vient de voir une participation réduite, l'appli sait que
+> cette moyenne n'aurait plus de sens, donc elle affiche simplement le
+> total à la place. Le message s'adapte tout seul, il reste toujours
+> exact.
 
 ## 8. Les soldes
 
@@ -203,5 +220,6 @@ dépenses, changer un montant, Enregistrer]**
 
 Général → nommer le voyage → langue → voyageurs (dont un "représente
 2") → dépense totale → dépense partielle + popup → nouveau voyageur +
-fenêtre rouge → tableau Dépenses → Soldes → Équilibrer + filtre +
-copier → Modifier une dépense → Export/Import → conclusion générale.
+fenêtre rouge + participation réduite → tableau Dépenses (moyenne ou
+total selon le cas) → Soldes → Équilibrer + filtre + copier →
+Modifier une dépense → Export/Import → conclusion générale.

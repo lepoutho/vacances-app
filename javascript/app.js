@@ -475,7 +475,12 @@ function renderBalances(){
     const row = document.createElement('div');
     row.className = 'bal-row';
     const cls = Math.abs(val) < 0.005 ? 'bal-zero' : (val > 0 ? 'bal-pos' : 'bal-neg');
-    const label = Math.abs(val) < 0.005 ? t('balanceUpToDate') : (val > 0 ? t('balanceOwesReceive') : t('balanceOwes'));
+    // A traveler entry can stand for several real people at once (the
+    // "représente" field — e.g. "Didier et Françoise" as one couple entry),
+    // in which case the verb needs to agree in the plural ("doivent" not
+    // "doit") rather than always defaulting to singular.
+    const isPlural = personSize(p) > 1;
+    const label = Math.abs(val) < 0.005 ? t('balanceUpToDate') : (val > 0 ? t('balanceOwesReceive', isPlural) : t('balanceOwes', isPlural));
     row.innerHTML = `<span>${escapeHtml(p.name)} <span style="color:var(--ink-soft); font-size:12px;">${label}</span></span>
       <span class="bal-amount ${cls}">${fmt(Math.abs(val))}</span>`;
     wrap.appendChild(row);
@@ -595,6 +600,10 @@ function renderSettlement(){
    filter is currently showing on screen, not necessarily the full list. */
 $('settlementCopyBtn').addEventListener('click', () => {
   const byId = Object.fromEntries(state.people.map(p => [p.id, p.name]));
+  // Needed so "doit"/"doivent" (and the Spanish "le"/"les") agree with
+  // whether a traveler entry represents one person or several (the
+  // "représente" field — e.g. "Didier et Françoise" as one couple entry).
+  const sizeById = Object.fromEntries(state.people.map(p => [p.id, personSize(p)]));
   let tx = computeSettlement();
   if(settlementFilter.size > 0){
     tx = tx.filter(txItem => settlementFilter.has(txItem.from) || settlementFilter.has(txItem.to));
@@ -607,7 +616,8 @@ $('settlementCopyBtn').addEventListener('click', () => {
   let previousFrom = null;
   tx.forEach(txItem => {
     if(previousFrom !== null && txItem.from !== previousFrom) lines.push('');
-    lines.push(t('settlementExportLine', byId[txItem.from] || '—', fmt(txItem.amount), byId[txItem.to] || '—'));
+    lines.push(t('settlementExportLine', byId[txItem.from] || '—', fmt(txItem.amount), byId[txItem.to] || '—',
+      (sizeById[txItem.from] || 1) > 1, (sizeById[txItem.to] || 1) > 1));
     previousFrom = txItem.from;
   });
   const text = `${state.tripName || t('defaultTripName')}\n\n${lines.join('\n')}`;
