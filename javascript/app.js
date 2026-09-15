@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'vacances-trip-v1';
 const LANG_STORAGE_KEY = 'vacances-lang';
-const LOCALE_MAP = { en: 'en-US', es: 'es-ES', fr: 'fr-FR' };
+const LOCALE_MAP = { en: 'en-US', es: 'es-ES', fr: 'fr-FR', zh: 'zh-CN', hi: 'hi-IN', sw: 'sw-KE' };
 
 let currentLang = 'fr';
 try{
