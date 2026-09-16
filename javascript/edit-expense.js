@@ -19,6 +19,37 @@ function renderEditExpensePayerSelect(){
   });
 }
 
+/* Recomputes and displays, next to each participant's name, exactly how
+   many euros this specific expense currently commits them to — live, as
+   the amount, the checked participants, or a participation level changes
+   in the form, before anything is saved. Same weighted-share formula as
+   computeBalances() (weight = headcount × participation level), just
+   scoped to this one expense's own amount field instead of the trip total. */
+function updateEditExpenseShares(){
+  const amount = parseFloat($('editExpenseAmount').value) || 0;
+  const sizeById = Object.fromEntries(state.people.map(p => [p.id, personSize(p)]));
+  const rows = Array.from(document.querySelectorAll('#editExpenseParticipants .edit-expense-person-row'));
+  const weights = {};
+  let totalWeight = 0;
+  rows.forEach(row => {
+    const checkbox = row.querySelector('input[type="checkbox"]');
+    const pid = checkbox.getAttribute('data-person-id');
+    if(!checkbox.checked){ weights[pid] = 0; return; }
+    const levelInput = row.querySelector('.edit-expense-level-input');
+    const levelPercent = levelInput ? (parseInt(levelInput.value, 10) || 0) : 100;
+    const weight = (sizeById[pid] || 1) * (levelPercent / 100);
+    weights[pid] = weight;
+    totalWeight += weight;
+  });
+  rows.forEach(row => {
+    const checkbox = row.querySelector('input[type="checkbox"]');
+    const pid = checkbox.getAttribute('data-person-id');
+    const shareSpan = row.querySelector('.edit-expense-share');
+    const share = (checkbox.checked && totalWeight > 0) ? amount * weights[pid] / totalWeight : 0;
+    shareSpan.textContent = `→ ${fmt(share)}`;
+  });
+}
+
 function renderEditExpenseParticipants(existingLevels){
   existingLevels = existingLevels || {};
   const wrap = $('editExpenseParticipants');
@@ -45,6 +76,7 @@ function renderEditExpenseParticipants(existingLevels){
       else editExpenseParticipants.delete(pid);
       cb.closest('.join-expense-row').querySelector('.join-expense-level').hidden = !checked;
     });
+    updateEditExpenseShares();
   });
 
   state.people.forEach(p => {
@@ -64,8 +96,11 @@ function renderEditExpenseParticipants(existingLevels){
     const nameSpan = document.createElement('span');
     nameSpan.className = 'join-expense-desc';
     nameSpan.textContent = p.name;
+    const shareSpan = document.createElement('span');
+    shareSpan.className = 'edit-expense-share';
     label.appendChild(checkbox);
     label.appendChild(nameSpan);
+    label.appendChild(shareSpan);
 
     const levelWrap = document.createElement('div');
     levelWrap.className = 'join-expense-level';
@@ -80,7 +115,8 @@ function renderEditExpenseParticipants(existingLevels){
     levelInput.value = String(levelPercent);
     levelInput.title = t('joinExpensesLevelTitle');
     levelInput.setAttribute('data-person-id', p.id);
-    levelInput.addEventListener('blur', clampLevelInputOnBlur);
+    levelInput.addEventListener('blur', (e) => { clampLevelInputOnBlur(e); updateEditExpenseShares(); });
+    levelInput.addEventListener('input', updateEditExpenseShares);
 
     const stepper = document.createElement('div');
     stepper.className = 'level-stepper';
@@ -89,13 +125,13 @@ function renderEditExpenseParticipants(existingLevels){
     minusBtn.className = 'level-step-btn';
     minusBtn.textContent = '−';
     minusBtn.setAttribute('aria-label', '-5%');
-    minusBtn.addEventListener('click', () => stepLevelInput(levelInput, -5));
+    minusBtn.addEventListener('click', () => { stepLevelInput(levelInput, -5); updateEditExpenseShares(); });
     const plusBtn = document.createElement('button');
     plusBtn.type = 'button';
     plusBtn.className = 'level-step-btn';
     plusBtn.textContent = '+';
     plusBtn.setAttribute('aria-label', '+5%');
-    plusBtn.addEventListener('click', () => stepLevelInput(levelInput, 5));
+    plusBtn.addEventListener('click', () => { stepLevelInput(levelInput, 5); updateEditExpenseShares(); });
     stepper.appendChild(minusBtn);
     stepper.appendChild(levelInput);
     stepper.appendChild(plusBtn);
@@ -112,13 +148,22 @@ function renderEditExpenseParticipants(existingLevels){
       else editExpenseParticipants.delete(p.id);
       levelWrap.hidden = !checkbox.checked;
       allCheckbox.checked = state.people.length > 0 && state.people.every(pp => editExpenseParticipants.has(pp.id));
+      updateEditExpenseShares();
     });
 
     row.appendChild(label);
     row.appendChild(levelWrap);
     wrap.appendChild(row);
   });
+
+  updateEditExpenseShares();
 }
+
+// Amount field is static markup (unlike the participant rows, which are
+// rebuilt on every render), so this listener is attached once here rather
+// than inside renderEditExpenseParticipants — attaching it there would
+// stack up a duplicate listener each time the modal is reopened.
+$('editExpenseAmount').addEventListener('input', updateEditExpenseShares);
 
 function openEditExpenseModal(expenseId){
   const exp = state.expenses.find(e => e.id === expenseId);
