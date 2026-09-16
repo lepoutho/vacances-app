@@ -273,7 +273,7 @@ const TRANSLATIONS = {
     resetBtn: '↺ 重置',
 
     peopleSectionTitle: '旅行者',
-    personNamePlaceholder: '名字（例如：Thomas）',
+    personNamePlaceholder: '名字（例如：小明）',
     representsLabel: '相当于',
     personSizeTitle: '代表的人数',
     addPersonBtn: '添加',
@@ -362,7 +362,7 @@ const TRANSLATIONS = {
     resetBtn: '↺ रीसेट करें',
 
     peopleSectionTitle: 'यात्री',
-    personNamePlaceholder: 'नाम (जैसे: Thomas)',
+    personNamePlaceholder: 'नाम (जैसे: राहुल)',
     representsLabel: 'के बराबर',
     personSizeTitle: 'प्रतिनिधित्व किए गए लोगों की संख्या',
     addPersonBtn: 'जोड़ें',
@@ -450,7 +450,7 @@ const TRANSLATIONS = {
     resetBtn: '↺ Weka upya',
 
     peopleSectionTitle: 'Wasafiri',
-    personNamePlaceholder: 'Jina la kwanza (mfano: Thomas)',
+    personNamePlaceholder: 'Jina la kwanza (mfano: Juma)',
     representsLabel: 'sawa na',
     personSizeTitle: 'Idadi ya watu wanaowakilishwa',
     addPersonBtn: 'Ongeza',
