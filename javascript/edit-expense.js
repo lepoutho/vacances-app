@@ -200,9 +200,16 @@ $('editExpenseSaveBtn').addEventListener('click', () => {
 
     // Rebuilt fresh from the current checked rows each time — sparse on
     // purpose, only participants left below 100% end up stored at all.
+    // Scoped to this modal specifically: the "Nouvelle dépense" form's own
+    // fine-mode rows reuse this same class name and data-person-id, and are
+    // left sitting in the DOM (just hidden) after being opened once, so an
+    // unscoped lookup here could silently grab a stale 100% from there
+    // instead of this modal's actual edited value — discarding every
+    // participation level on the expense, not just failing to save the
+    // intended change.
     const newLevels = {};
     participants.forEach(pid => {
-      const input = document.querySelector(`.edit-expense-level-input[data-person-id="${pid}"]`);
+      const input = document.querySelector(`#editExpenseParticipants .edit-expense-level-input[data-person-id="${pid}"]`);
       if(!input) return;
       const level = clampLevelValue(parseInt(input.value, 10), input);
       if(level !== 100) newLevels[pid] = level / 100;
