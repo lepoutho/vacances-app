@@ -492,6 +492,15 @@ $('expenseFineModeToggle').addEventListener('click', () => {
     setTimeout(() => {
       $('expenseFineParticipants').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 300);
+  }else{
+    // Symmetrical issue on the way back: collapsing the taller detail rows
+    // back down to plain chips shortens the page above this button, so the
+    // viewport can settle somewhere that doesn't match how the simple form
+    // actually sits — same fix, same delay for any keyboard dismissal
+    // still resolving, just scrolling to this button instead.
+    setTimeout(() => {
+      $('expenseFineModeToggle').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
   }
 });
 
