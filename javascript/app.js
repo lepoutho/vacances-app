@@ -480,6 +480,19 @@ function updateExpenseFineShares(){
 $('expenseFineModeToggle').addEventListener('click', () => {
   expenseFineMode = !expenseFineMode;
   renderParticipantChips();
+  if(expenseFineMode){
+    // On a phone, this button is usually tapped right after typing in the
+    // description/amount field, so tapping it also dismisses that field's
+    // on-screen keyboard — and the keyboard closing resizes the page a
+    // moment later, which can leave the newly-revealed detail rows
+    // scrolled out of view (looking like the page jumped back up to
+    // "Voyageurs" instead). Scrolling explicitly, after a brief delay for
+    // that keyboard-dismiss reflow to settle first, makes this land
+    // correctly regardless of what the keyboard just did.
+    setTimeout(() => {
+      $('expenseFineParticipants').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  }
 });
 
 $('expenseAmount').addEventListener('input', () => {
