@@ -425,9 +425,15 @@ function updateExpenseFineShares(){
   rows.forEach(row => {
     const checkbox = row.querySelector('input[type="checkbox"]');
     const pid = checkbox.getAttribute('data-person-id');
-    if(!checkbox.checked){ weights[pid] = 0; return; }
     const levelInput = row.querySelector('.edit-expense-level-input');
     const levelPercent = levelInput ? (parseInt(levelInput.value, 10) || 0) : 100;
+    // Persisted here — not just left sitting in the DOM — so a percentage
+    // typed while in fine mode survives toggling back to "mode simple" and
+    // into fine mode again, instead of silently resetting to 100%: this
+    // whole view gets torn down and rebuilt from expenseFineLevels each
+    // time fine mode reopens, so anything not saved here is lost.
+    expenseFineLevels[pid] = levelPercent / 100;
+    if(!checkbox.checked){ weights[pid] = 0; return; }
     const weight = (sizeById[pid] || 1) * (levelPercent / 100);
     weights[pid] = weight;
     totalWeight += weight;
