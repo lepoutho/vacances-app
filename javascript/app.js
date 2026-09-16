@@ -124,6 +124,32 @@ function showConfirm(message, { danger = false } = {}){
   return showModal({ message, confirmKey: 'modalConfirmBtn', cancelKey: 'modalCancelBtn', danger });
 }
 
+// Small tooltip anchored under a specific field (e.g. an empty required
+// field on submit) — deliberately not the big centered modal above, which
+// is for things needing a deliberate click (confirmations, warnings).
+// This is fleeting: it fades out on its own, or the moment the field is
+// corrected, same spirit as a native browser validation bubble but in the
+// app's own selected language.
+let fieldTooltipTimeoutId = null;
+function showFieldTooltip(inputEl, message){
+  const el = $('fieldTooltip');
+  el.textContent = message;
+  const rect = inputEl.getBoundingClientRect();
+  el.style.left = `${rect.left}px`;
+  el.style.top = `${rect.bottom + 6}px`;
+  el.hidden = false;
+  void el.offsetWidth; // force reflow so the fade-in replays if already visible
+  el.classList.add('field-tooltip-visible');
+
+  const hide = () => {
+    el.classList.remove('field-tooltip-visible');
+    setTimeout(() => { el.hidden = true; }, 200);
+  };
+  clearTimeout(fieldTooltipTimeoutId);
+  fieldTooltipTimeoutId = setTimeout(hide, 2200);
+  inputEl.addEventListener('input', () => { clearTimeout(fieldTooltipTimeoutId); hide(); }, { once: true });
+}
+
 /* Join-existing-expenses modal (opened from the personForm handler below)
    lives in its own file: javascript/join-expenses.js */
 
@@ -207,7 +233,11 @@ $('personForm').addEventListener('submit', (e) => {
   const input = $('personInput');
   const sizeInput = $('personSize');
   const name = input.value.trim();
-  if(!name) return;
+  // Native HTML5 "required" validation is disabled on this form (see
+  // novalidate in index.html): the browser's own bubble message renders in
+  // the browser/OS language, not the language picked in the app — same
+  // reason alert()/confirm() were replaced with the custom modal earlier.
+  if(!name){ showFieldTooltip(input, t('requiredFieldWarning')); input.focus(); return; }
   // Names are the only thing distinguishing travelers on screen (balances,
   // "paid by", shares…) — two people with the same name would look
   // impossible to tell apart everywhere, so duplicates are blocked here.
@@ -492,7 +522,14 @@ $('expenseForm').addEventListener('submit', (e) => {
   const amount = parseFloat($('expenseAmount').value);
   const payer = $('expensePayer').value;
   const participants = Array.from(selectedParticipants);
-  if(!desc || !amount || amount <= 0 || !payer || participants.length === 0) return;
+  // Native HTML5 "required" validation is disabled on this form (see
+  // novalidate in index.html): the browser's own bubble message renders in
+  // the browser/OS language, not the language picked in the app — same
+  // reason alert()/confirm() were replaced with the custom modal earlier.
+  if(!desc){ showFieldTooltip($('expenseDesc'), t('requiredFieldWarning')); $('expenseDesc').focus(); return; }
+  if(!$('expenseAmount').value){ showFieldTooltip($('expenseAmount'), t('requiredFieldWarning')); $('expenseAmount').focus(); return; }
+  if(!payer){ showFieldTooltip($('expensePayer'), t('requiredFieldWarning')); return; }
+  if(!amount || amount <= 0 || participants.length === 0) return;
 
   const participationLevels = buildExpenseFineLevels(participants);
 

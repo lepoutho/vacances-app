@@ -247,11 +247,22 @@ button:active{ transform: scale(0.97); }
    hidden behind this link so the everyday case (chips only) stays as
    simple as before; only expands into per-person checkboxes + % when
    actually needed, instead of forcing a create-then-edit round trip. */
+/* Styled as a chip/pill rather than a bare text link — on a phone, plain
+   text with no border or padding is both hard to aim at (tiny tap target)
+   and easy to miss as tappable at all, since there's nothing to signal it.
+   A pill matches the chips directly above it, so a finger that already
+   knows those are tappable reads this one the same way at a glance. */
 .fine-mode-toggle{
-  background:none; padding:0; margin-top:8px;
-  font-size: 12px; color: var(--teal-deep); font-weight:600;
+  display: inline-flex; align-items:center; gap:6px;
+  background: var(--bg); color: var(--teal-deep);
+  border: 1px dashed var(--teal-deep);
+  padding: 8px 14px; margin-top:10px;
+  border-radius: 999px;
+  font-size: 12.5px; font-weight:600;
 }
-.fine-mode-toggle:hover{ background:none; text-decoration: underline; }
+.fine-mode-toggle::before{ content:'⚙'; font-size:12px; }
+.fine-mode-toggle:hover{ background: var(--bg); border-style: solid; }
+.fine-mode-toggle:active{ background: var(--line); }
 #expenseFineParticipants{ margin-top: 8px; }
 #expenseFineParticipants[hidden]{ display:none; }
 /* .chip-list's own display:flex has the same specificity as a bare [hidden]
@@ -401,6 +412,35 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
 }
 .toast[hidden]{ display:none; }
 .toast.toast-visible{ opacity: 1; transform: translateY(4px); }
+
+/* Small, fleeting tooltip anchored right under an invalid field (empty
+   required field on submit) — sized and positioned like a native browser
+   validation bubble, not the big centered modal used for actual decisions
+   (confirmations, warnings needing a click). Disappears on its own after a
+   couple seconds, or as soon as the field is corrected. */
+.field-tooltip{
+  position: fixed;
+  background: var(--ink);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(20,43,61,0.25);
+  z-index: 1300;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.field-tooltip[hidden]{ display:none; }
+.field-tooltip.field-tooltip-visible{ opacity: 1; transform: translateY(0); }
+.field-tooltip::before{
+  content: '';
+  position: absolute; top: -5px; left: 14px;
+  border: 5px solid transparent; border-bottom-color: var(--ink);
+}
 .modal-actions{ display:flex; justify-content:flex-end; gap:10px; }
 .modal-btn-secondary{
   background: transparent;
