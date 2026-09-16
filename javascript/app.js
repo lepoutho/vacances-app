@@ -50,6 +50,22 @@ $('langSelect').addEventListener('change', (e) => {
   try{ localStorage.setItem(LANG_STORAGE_KEY, currentLang); }catch(err){ /* ignore */ }
   applyStaticTranslations();
   render();
+  // The edit-expense and join-expenses modals build part of their content
+  // in JS (payer <select>, participant rows) rather than via data-i18n, so
+  // switching language while one is already open would otherwise leave
+  // that part stuck in the old language until the modal is closed and
+  // reopened. Refresh it in place instead, if one is currently open.
+  if(typeof editingExpenseId !== 'undefined' && editingExpenseId){
+    const exp = state.expenses.find(ex => ex.id === editingExpenseId);
+    if(exp){
+      renderEditExpensePayerSelect();
+      $('editExpensePayer').value = exp.payer;
+      renderEditExpenseParticipants(exp.participationLevels);
+    }
+  }
+  if(typeof joinExpensesPersonId !== 'undefined' && joinExpensesPersonId){
+    renderJoinExpensesItems();
+  }
 });
 
 /* ---------- Modal dialogs (replaces native alert/confirm, whose title bar
