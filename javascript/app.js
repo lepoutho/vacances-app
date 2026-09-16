@@ -11,6 +11,8 @@ try{
 let state = { tripName: TRANSLATIONS[currentLang].defaultTripName, people: [], expenses: [] };
 let selectedParticipants = new Set();
 let participantsInitialized = false; // true once the default "everyone selected" fill has run
+let expenseFineMode = false; // true once "Régler les participations en détail" has been opened
+let expenseFineLevels = {}; // sparse pid -> fraction, mirrors exp.participationLevels while typing
 let settlementFilter = new Set(); // empty = everyone
 let expensePayerFilter = new Set(); // empty = everyone
 
@@ -248,12 +250,31 @@ function renderPayerSelect(){
 
 function renderParticipantChips(){
   const wrap = $('expenseParticipants');
+  const fineWrap = $('expenseFineParticipants');
+  const toggleBtn = $('expenseFineModeToggle');
   wrap.innerHTML = '';
-  if(state.people.length === 0) return;
+  if(state.people.length === 0){ toggleBtn.hidden = true; fineWrap.hidden = true; return; }
   if(!participantsInitialized){
     state.people.forEach(p => selectedParticipants.add(p.id));
     participantsInitialized = true;
   }
+
+  toggleBtn.hidden = false;
+  toggleBtn.textContent = t(expenseFineMode ? 'expenseFineModeOff' : 'expenseFineModeOn');
+
+  // The fine-mode link swaps the whole selector, rather than showing both
+  // at once — two different controls for the same "who's in" choice would
+  // just be confusing. Simple chips stay the default for every ordinary
+  // expense; this only opens when someone actually needs to reduce a
+  // specific person's share on the new expense itself, instead of adding
+  // it plain and then reopening it through "Modifier" right after.
+  if(expenseFineMode){
+    wrap.hidden = true;
+    renderExpenseFineParticipants();
+    return;
+  }
+  wrap.hidden = false;
+  fineWrap.hidden = true;
 
   const allSelected = state.people.every(p => selectedParticipants.has(p.id));
   const allChip = document.createElement('div');
@@ -279,13 +300,184 @@ function renderParticipantChips(){
   });
 }
 
-function addExpense(desc, amount, payer, participants){
-  state.expenses.push({ id: uid(), desc, amount, payer, participants });
+/* Fine mode: same row layout (checkbox + name + % stepper) as the "join
+   expenses" and "edit expense" modals, so it behaves exactly the way
+   people already know from there — just reused here to avoid the
+   create-then-edit round trip when the reduced share is already known
+   at creation time. */
+function renderExpenseFineParticipants(){
+  const wrap = $('expenseFineParticipants');
+  wrap.hidden = false;
+  wrap.innerHTML = '';
+
+  const allSelected = state.people.every(p => selectedParticipants.has(p.id));
+  const allRow = document.createElement('label');
+  allRow.className = 'join-expense-row join-expense-all';
+  const allCheckbox = document.createElement('input');
+  allCheckbox.type = 'checkbox';
+  allCheckbox.checked = allSelected;
+  const allLabel = document.createElement('span');
+  allLabel.textContent = t('allChipLabel');
+  allRow.appendChild(allCheckbox);
+  allRow.appendChild(allLabel);
+  wrap.appendChild(allRow);
+
+  allCheckbox.addEventListener('change', () => {
+    const checked = allCheckbox.checked;
+    wrap.querySelectorAll('.edit-expense-person-row input[type="checkbox"]').forEach(cb => {
+      cb.checked = checked;
+      const pid = cb.getAttribute('data-person-id');
+      if(checked) selectedParticipants.add(pid);
+      else selectedParticipants.delete(pid);
+      cb.closest('.join-expense-row').querySelector('.join-expense-level').hidden = !checked;
+    });
+    updateExpenseFineShares();
+  });
+
+  state.people.forEach(p => {
+    const checked = selectedParticipants.has(p.id);
+    const levelFraction = expenseFineLevels[p.id] !== undefined ? expenseFineLevels[p.id] : 1;
+    const levelPercent = Math.round(levelFraction * 100);
+
+    const row = document.createElement('div');
+    row.className = 'join-expense-row edit-expense-person-row';
+
+    const label = document.createElement('label');
+    label.className = 'join-expense-label';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = checked;
+    checkbox.setAttribute('data-person-id', p.id);
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'join-expense-desc';
+    nameSpan.textContent = p.name;
+    const shareSpan = document.createElement('span');
+    shareSpan.className = 'edit-expense-share';
+    label.appendChild(checkbox);
+    label.appendChild(nameSpan);
+    label.appendChild(shareSpan);
+
+    const levelWrap = document.createElement('div');
+    levelWrap.className = 'join-expense-level';
+    levelWrap.hidden = !checked;
+    const levelLabel = document.createElement('span');
+    levelLabel.className = 'join-expense-level-label';
+    levelLabel.textContent = t('joinExpensesLevelLabel');
+    const levelInput = document.createElement('input');
+    levelInput.type = 'number';
+    levelInput.className = 'edit-expense-level-input';
+    levelInput.min = '5'; levelInput.max = '100'; levelInput.step = '5';
+    levelInput.value = String(levelPercent);
+    levelInput.title = t('joinExpensesLevelTitle');
+    levelInput.setAttribute('data-person-id', p.id);
+    levelInput.addEventListener('blur', (e) => { clampLevelInputOnBlur(e); updateExpenseFineShares(); });
+    levelInput.addEventListener('input', updateExpenseFineShares);
+
+    const stepper = document.createElement('div');
+    stepper.className = 'level-stepper';
+    const minusBtn = document.createElement('button');
+    minusBtn.type = 'button';
+    minusBtn.className = 'level-step-btn';
+    minusBtn.textContent = '−';
+    minusBtn.setAttribute('aria-label', '-5%');
+    minusBtn.addEventListener('click', () => { stepLevelInput(levelInput, -5); updateExpenseFineShares(); });
+    const plusBtn = document.createElement('button');
+    plusBtn.type = 'button';
+    plusBtn.className = 'level-step-btn';
+    plusBtn.textContent = '+';
+    plusBtn.setAttribute('aria-label', '+5%');
+    plusBtn.addEventListener('click', () => { stepLevelInput(levelInput, 5); updateExpenseFineShares(); });
+    stepper.appendChild(minusBtn);
+    stepper.appendChild(levelInput);
+    stepper.appendChild(plusBtn);
+
+    const levelSuffix = document.createElement('span');
+    levelSuffix.className = 'join-expense-level-suffix';
+    levelSuffix.textContent = '%';
+    levelWrap.appendChild(levelLabel);
+    levelWrap.appendChild(stepper);
+    levelWrap.appendChild(levelSuffix);
+
+    checkbox.addEventListener('change', () => {
+      if(checkbox.checked) selectedParticipants.add(p.id);
+      else selectedParticipants.delete(p.id);
+      levelWrap.hidden = !checkbox.checked;
+      allCheckbox.checked = state.people.length > 0 && state.people.every(pp => selectedParticipants.has(pp.id));
+      updateExpenseFineShares();
+    });
+
+    row.appendChild(label);
+    row.appendChild(levelWrap);
+    wrap.appendChild(row);
+  });
+
+  updateExpenseFineShares();
+}
+
+/* Same live per-person euro preview as the edit-expense modal, just reading
+   the new-expense form's own amount field instead of an existing expense's. */
+function updateExpenseFineShares(){
+  const amount = parseFloat($('expenseAmount').value) || 0;
+  const sizeById = Object.fromEntries(state.people.map(p => [p.id, personSize(p)]));
+  const rows = Array.from(document.querySelectorAll('#expenseFineParticipants .edit-expense-person-row'));
+  const weights = {};
+  let totalWeight = 0;
+  rows.forEach(row => {
+    const checkbox = row.querySelector('input[type="checkbox"]');
+    const pid = checkbox.getAttribute('data-person-id');
+    if(!checkbox.checked){ weights[pid] = 0; return; }
+    const levelInput = row.querySelector('.edit-expense-level-input');
+    const levelPercent = levelInput ? (parseInt(levelInput.value, 10) || 0) : 100;
+    const weight = (sizeById[pid] || 1) * (levelPercent / 100);
+    weights[pid] = weight;
+    totalWeight += weight;
+  });
+  rows.forEach(row => {
+    const checkbox = row.querySelector('input[type="checkbox"]');
+    const pid = checkbox.getAttribute('data-person-id');
+    const shareSpan = row.querySelector('.edit-expense-share');
+    const share = (checkbox.checked && totalWeight > 0) ? amount * weights[pid] / totalWeight : 0;
+    shareSpan.textContent = `→ ${fmt(share)}`;
+  });
+}
+
+$('expenseFineModeToggle').addEventListener('click', () => {
+  expenseFineMode = !expenseFineMode;
+  renderParticipantChips();
+});
+
+$('expenseAmount').addEventListener('input', () => {
+  if(expenseFineMode) updateExpenseFineShares();
+});
+
+function addExpense(desc, amount, payer, participants, participationLevels){
+  const exp = { id: uid(), desc, amount, payer, participants };
+  if(participationLevels) exp.participationLevels = participationLevels;
+  state.expenses.push(exp);
   $('expenseDesc').value = '';
   $('expenseAmount').value = '';
+  // Fine mode is a deliberate, per-expense opt-in — reset back to the plain
+  // chip view for the next entry rather than carrying it (and any of its
+  // percentages) over to an unrelated expense.
+  expenseFineMode = false;
+  expenseFineLevels = {};
   save(); render();
   $('expenseDesc').focus();
   if(isTouchDevice()) showToast(t('expenseAddedToast'));
+}
+
+// Reads the fine-mode rows (when open) into the same sparse pid->fraction
+// shape stored on an expense — mirrors the save logic in edit-expense.js.
+function buildExpenseFineLevels(participants){
+  if(!expenseFineMode) return null;
+  const newLevels = {};
+  participants.forEach(pid => {
+    const input = document.querySelector(`#expenseFineParticipants .edit-expense-level-input[data-person-id="${pid}"]`);
+    if(!input) return;
+    const level = clampLevelValue(parseInt(input.value, 10), input);
+    if(level !== 100) newLevels[pid] = level / 100;
+  });
+  return Object.keys(newLevels).length > 0 ? newLevels : null;
 }
 
 $('expenseForm').addEventListener('submit', (e) => {
@@ -296,9 +488,11 @@ $('expenseForm').addEventListener('submit', (e) => {
   const participants = Array.from(selectedParticipants);
   if(!desc || !amount || amount <= 0 || !payer || participants.length === 0) return;
 
+  const participationLevels = buildExpenseFineLevels(participants);
+
   const sharedByEveryone = participants.length === state.people.length;
   if(sharedByEveryone){
-    addExpense(desc, amount, payer, participants);
+    addExpense(desc, amount, payer, participants, participationLevels);
     return;
   }
 
@@ -308,7 +502,7 @@ $('expenseForm').addEventListener('submit', (e) => {
   const payerName = byId[payer] || '—';
   const shareNames = participants.map(id => byId[id]).filter(Boolean).join(', ');
   showConfirm(t('confirmPartialExpense', desc, fmt(amount), payerName, shareNames)).then(ok => {
-    if(ok) addExpense(desc, amount, payer, participants);
+    if(ok) addExpense(desc, amount, payer, participants, participationLevels);
   });
 });
 

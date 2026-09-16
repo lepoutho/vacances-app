@@ -243,6 +243,22 @@ button:active{ transform: scale(0.97); }
 .exp-edit{ color: var(--teal-deep); }
 .exp-del:hover, .exp-edit:hover{ background:none; text-decoration: underline; }
 
+/* Optional fine-grained participation control on the "new expense" form —
+   hidden behind this link so the everyday case (chips only) stays as
+   simple as before; only expands into per-person checkboxes + % when
+   actually needed, instead of forcing a create-then-edit round trip. */
+.fine-mode-toggle{
+  background:none; padding:0; margin-top:8px;
+  font-size: 12px; color: var(--teal-deep); font-weight:600;
+}
+.fine-mode-toggle:hover{ background:none; text-decoration: underline; }
+#expenseFineParticipants{ margin-top: 8px; }
+#expenseFineParticipants[hidden]{ display:none; }
+/* .chip-list's own display:flex has the same specificity as a bare [hidden]
+   rule and loads later, so it would otherwise win and keep the chips
+   showing — matching the fix already needed for .join-expense-level. */
+#expenseParticipants[hidden]{ display:none; }
+
 .panel-settlement .eyebrow{ margin-top: 2px; }
 .panel-settlement .chip-list{ margin-bottom: 16px; }
 .chip.chip-all{ font-weight: 600; }
