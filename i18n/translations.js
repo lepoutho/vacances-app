@@ -77,6 +77,7 @@ const TRANSLATIONS = {
     joinExpensesPartialNote: 'Expenses shown in red were not shared by everyone already on the trip — check whether you should be included in them too.',
     importParseError: 'Unable to read this save file.',
     resetConfirm: 'Resetting will erase all travelers, expenses, and the trip name. This action cannot be undone. Continue?',
+    confirmDeleteExpense: (desc) => `Delete "${desc}"? This action cannot be undone.`,
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
       `"${desc}" (${amountFmt}) won't be shared by everyone.\nPaid by ${payer} · shared between ${shares}.\n\nContinue?`,
     modalOkBtn: 'OK',
@@ -166,6 +167,7 @@ const TRANSLATIONS = {
     joinExpensesPartialNote: 'Los gastos en rojo no fueron compartidos por todos los que ya estaban en el viaje — comprueba si también deberías participar en ellos.',
     importParseError: 'No se pudo leer este archivo de guardado.',
     resetConfirm: 'Reiniciar borrará todos los viajeros, gastos y el nombre del viaje. Esta acción no se puede deshacer. ¿Continuar?',
+    confirmDeleteExpense: (desc) => `¿Eliminar "${desc}"? Esta acción no se puede deshacer.`,
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
       `"${desc}" (${amountFmt}) no se compartirá entre todos.\nPagado por ${payer} · compartido entre ${shares}.\n\n¿Continuar?`,
     modalOkBtn: 'Aceptar',
@@ -255,6 +257,7 @@ const TRANSLATIONS = {
     joinExpensesPartialNote: "Les dépenses en rouge n'ont pas été partagées par tous les voyageurs déjà présents — vérifie si tu devrais y être inclus toi aussi.",
     importParseError: 'Impossible de lire ce fichier de sauvegarde.',
     resetConfirm: 'Réinitialiser va effacer tous les voyageurs, dépenses et le nom du voyage. Cette action est irréversible. Continuer ?',
+    confirmDeleteExpense: (desc) => `Supprimer « ${desc} » ? Cette action est irréversible.`,
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
       `« ${desc} » (${amountFmt}) ne sera pas partagée par tout le monde.\nPayée par ${payer} · partagée entre ${shares}.\n\nContinuer ?`,
     modalOkBtn: 'OK',
@@ -344,6 +347,7 @@ const TRANSLATIONS = {
     joinExpensesPartialNote: '红色显示的支出并非由旅行中已有的所有人分摊 — 请确认您是否也应该被包含在内。',
     importParseError: '无法读取此存档文件。',
     resetConfirm: '重置将清除所有旅行者、支出和旅行名称。此操作无法撤销。是否继续？',
+    confirmDeleteExpense: (desc) => `删除"${desc}"？此操作无法撤销。`,
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
       `"${desc}"（${amountFmt}）不会由所有人分摊。\n付款人：${payer} · 分摊对象：${shares}。\n\n是否继续？`,
     modalOkBtn: '确定',
@@ -437,6 +441,7 @@ const TRANSLATIONS = {
     joinExpensesPartialNote: 'लाल रंग में दिखाए गए खर्च यात्रा में पहले से मौजूद सभी लोगों के बीच नहीं बांटे गए थे — जांचें कि क्या आपको भी इनमें शामिल होना चाहिए।',
     importParseError: 'इस सेव फ़ाइल को पढ़ा नहीं जा सका।',
     resetConfirm: 'रीसेट करने से सभी यात्री, खर्च और यात्रा का नाम मिट जाएगा। यह क्रिया पूर्ववत नहीं की जा सकती। जारी रखें?',
+    confirmDeleteExpense: (desc) => `"${desc}" को हटाएं? यह क्रिया पूर्ववत नहीं की जा सकती।`,
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
       `"${desc}" (${amountFmt}) सभी के बीच नहीं बांटी जाएगी।\nभुगतानकर्ता: ${payer} · इनके बीच बांटा गया: ${shares}।\n\nजारी रखें?`,
     modalOkBtn: 'ठीक है',
@@ -528,6 +533,7 @@ const TRANSLATIONS = {
     joinExpensesPartialNote: 'Gharama zilizoonyeshwa kwa rangi nyekundu hazikugawanywa na kila mtu aliyekuwa tayari safarini — angalia kama unapaswa kujumuishwa pia.',
     importParseError: 'Imeshindwa kusoma faili hii ya hifadhi.',
     resetConfirm: 'Kuweka upya kutafuta wasafiri wote, gharama, na jina la safari. Kitendo hiki hakiwezi kutenduliwa. Endelea?',
+    confirmDeleteExpense: (desc) => `Futa "${desc}"? Kitendo hiki hakiwezi kutenduliwa.`,
     confirmPartialExpense: (desc, amountFmt, payer, shares) =>
       `"${desc}" (${amountFmt}) haitagawanywa na kila mtu.\nImelipwa na ${payer} · imegawanywa kati ya ${shares}.\n\nEndelea?`,
     modalOkBtn: 'Sawa',
