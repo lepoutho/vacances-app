@@ -228,6 +228,13 @@ function removePerson(id){
   save(); render();
 }
 
+// Reuses the same +/- stepper as the participation-percentage fields —
+// stepLevelInput() itself is generic, clamping to whatever min/max/step the
+// target input declares (here 1 and no explicit max, so it just steps by 1
+// with a floor of 1), so no separate logic is needed just for this field.
+$('personSizeMinus').addEventListener('click', () => stepLevelInput($('personSize'), -1));
+$('personSizePlus').addEventListener('click', () => stepLevelInput($('personSize'), 1));
+
 $('personForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const input = $('personInput');
@@ -521,7 +528,7 @@ function addExpense(desc, amount, payer, participants, participationLevels){
   expenseFineLevels = {};
   save(); render();
   $('expenseDesc').focus();
-  if(isTouchDevice()) showToast(t('expenseAddedToast'));
+  showToast(t('expenseAddedToast'));
 }
 
 // Reads the fine-mode rows (when open) into the same sparse pid->fraction
@@ -913,12 +920,6 @@ $('settlementCopyBtn').addEventListener('click', () => {
 /* ---------- misc ---------- */
 function escapeHtml(str){
   return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
-}
-
-// Same touch-vs-mouse detection used for the participation-level stepper —
-// see the CSS media query in style.css for the reasoning.
-function isTouchDevice(){
-  return matchMedia('(hover: none), (pointer: coarse)').matches;
 }
 
 // Brief status message pinned to the top of the screen (above where an

@@ -41,7 +41,11 @@
       <form id="personForm" novalidate>
         <input id="personInput" placeholder="Prénom (ex : Thomas)" data-i18n-placeholder="personNamePlaceholder" autocomplete="off" required/>
         <span class="represents-label" data-i18n="representsLabel">représente</span>
-        <input id="personSize" type="number" min="1" step="1" value="1" title="Nombre de personnes représentées" data-i18n-title="personSizeTitle"/>
+        <div class="level-stepper">
+          <button type="button" class="level-step-btn" id="personSizeMinus" aria-label="-1">−</button>
+          <input id="personSize" type="number" min="1" step="1" value="1" title="Nombre de personnes représentées" data-i18n-title="personSizeTitle"/>
+          <button type="button" class="level-step-btn" id="personSizePlus" aria-label="+1">+</button>
+        </div>
         <button type="submit" data-i18n="addPersonBtn">Ajouter</button>
       </form>
       <hr class="panel-divider"/>

@@ -175,7 +175,11 @@ button:active{ transform: scale(0.97); }
    keeps it from being squeezed down to an unusable sliver at in-between
    widths — it wraps onto its own line instead. */
 #personInput{ flex: 1 1 auto; min-width: 120px; }
-#personForm input#personSize{ flex: none; width: 70px; text-align:center; }
+/* The +/- stepper is shared with the participation-percentage fields
+   elsewhere (join-expenses, edit-expense, fine-mode) — same touch-target
+   fix, same revert to the native number spinner on desktop — just with the
+   input's own min="1" step="1" giving a headcount step instead of 5%. */
+#personForm .level-stepper{ flex: none; }
 #personForm .represents-label{ flex:none; white-space:nowrap; color: var(--muted, #666); font-size: 0.9em; }
 #personForm button{ flex: none; }
 
