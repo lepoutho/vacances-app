@@ -337,6 +337,14 @@ function renderParticipantChips(){
   });
 }
 
+/* A percentage only means something relative to an actual amount — with
+   no amount typed yet there's nothing to split, so the % steppers stay
+   frozen at 100% until one is entered, rather than letting someone set a
+   share that doesn't correspond to anything yet. */
+function expenseFineLevelsLocked(){
+  return !(parseFloat($('expenseAmount').value) > 0);
+}
+
 /* Fine mode: same row layout (checkbox + name + % stepper) as the "join
    expenses" and "edit expense" modals, so it behaves exactly the way
    people already know from there — just reused here to avoid the
@@ -371,10 +379,12 @@ function renderExpenseFineParticipants(){
     updateExpenseFineShares();
   });
 
+  const locked = expenseFineLevelsLocked();
+
   state.people.forEach(p => {
     const checked = selectedParticipants.has(p.id);
     const levelFraction = expenseFineLevels[p.id] !== undefined ? expenseFineLevels[p.id] : 1;
-    const levelPercent = Math.round(levelFraction * 100);
+    const levelPercent = locked ? 100 : Math.round(levelFraction * 100);
 
     const row = document.createElement('div');
     row.className = 'join-expense-row edit-expense-person-row';
@@ -407,22 +417,25 @@ function renderExpenseFineParticipants(){
     levelInput.value = String(levelPercent);
     levelInput.title = t('joinExpensesLevelTitle');
     levelInput.setAttribute('data-person-id', p.id);
+    levelInput.disabled = locked;
     levelInput.addEventListener('blur', (e) => { clampLevelInputOnBlur(e); updateExpenseFineShares(); });
     levelInput.addEventListener('input', updateExpenseFineShares);
 
     const stepper = document.createElement('div');
-    stepper.className = 'level-stepper';
+    stepper.className = 'level-stepper' + (locked ? ' level-stepper-locked' : '');
     const minusBtn = document.createElement('button');
     minusBtn.type = 'button';
     minusBtn.className = 'level-step-btn';
     minusBtn.textContent = '−';
     minusBtn.setAttribute('aria-label', '-5%');
+    minusBtn.disabled = locked;
     minusBtn.addEventListener('click', () => { stepLevelInput(levelInput, -5); updateExpenseFineShares(); });
     const plusBtn = document.createElement('button');
     plusBtn.type = 'button';
     plusBtn.className = 'level-step-btn';
     plusBtn.textContent = '+';
     plusBtn.setAttribute('aria-label', '+5%');
+    plusBtn.disabled = locked;
     plusBtn.addEventListener('click', () => { stepLevelInput(levelInput, 5); updateExpenseFineShares(); });
     stepper.appendChild(minusBtn);
     stepper.appendChild(levelInput);
@@ -455,6 +468,7 @@ function renderExpenseFineParticipants(){
    the new-expense form's own amount field instead of an existing expense's. */
 function updateExpenseFineShares(){
   const amount = parseFloat($('expenseAmount').value) || 0;
+  const locked = expenseFineLevelsLocked();
   const sizeById = Object.fromEntries(state.people.map(p => [p.id, personSize(p)]));
   const rows = Array.from(document.querySelectorAll('#expenseFineParticipants .edit-expense-person-row'));
   const weights = {};
@@ -468,8 +482,11 @@ function updateExpenseFineShares(){
     // typed while in fine mode survives toggling back to "mode simple" and
     // into fine mode again, instead of silently resetting to 100%: this
     // whole view gets torn down and rebuilt from expenseFineLevels each
-    // time fine mode reopens, so anything not saved here is lost.
-    expenseFineLevels[pid] = levelPercent / 100;
+    // time fine mode reopens, so anything not saved here is lost. Skipped
+    // while locked (no amount yet) — the field is forced to 100% then, and
+    // persisting that would overwrite a real value someone set earlier
+    // before clearing the amount back out.
+    if(!locked) expenseFineLevels[pid] = levelPercent / 100;
     if(!checkbox.checked){ weights[pid] = 0; return; }
     const weight = (sizeById[pid] || 1) * (levelPercent / 100);
     weights[pid] = weight;
@@ -512,7 +529,11 @@ $('expenseFineModeToggle').addEventListener('click', () => {
 });
 
 $('expenseAmount').addEventListener('input', () => {
-  if(expenseFineMode) updateExpenseFineShares();
+  // Full re-render, not just updateExpenseFineShares(), because typing the
+  // first digit (or clearing back to empty) crosses the locked/unlocked
+  // threshold and needs the steppers' disabled state and displayed value
+  // resynced, not just the € preview.
+  if(expenseFineMode) renderExpenseFineParticipants();
 });
 
 function addExpense(desc, amount, payer, participants, participationLevels){
