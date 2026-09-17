@@ -644,7 +644,14 @@ function renderExpenses(){
     const del = document.createElement('button');
     del.className = 'exp-del';
     del.textContent = t('deleteBtn');
-    del.onclick = () => { state.expenses = state.expenses.filter(e => e.id !== exp.id); save(); render(); };
+    del.onclick = () => {
+      showConfirm(t('confirmDeleteExpense', exp.desc), { danger: true }).then(sure => {
+        if(!sure) return;
+        state.expenses = state.expenses.filter(e => e.id !== exp.id);
+        save();
+        render();
+      });
+    };
     actions.appendChild(del);
     li.appendChild(actions);
     list.appendChild(li);
