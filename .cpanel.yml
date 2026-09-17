@@ -7,3 +7,4 @@ deployment:
     - /bin/cp -R javascript $DEPLOYPATH
     - /bin/cp -R i18n $DEPLOYPATH
     - /bin/cp -R html/* $DEPLOYPATH
+    - /bin/cp html/.htaccess $DEPLOYPATH
