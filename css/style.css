@@ -521,6 +521,9 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
   display:flex; align-items:center; justify-content:center;
 }
 .level-step-btn:hover{ background:var(--line); color:var(--ink); }
+.level-stepper-locked{ opacity:.5; }
+.level-stepper-locked .level-step-btn,
+.level-stepper-locked input{ cursor:not-allowed; }
 /* On a device with a precise pointer (a mouse/trackpad — real desktops, and
    any desktop browser window regardless of how narrow it's resized), the
    native number-spinner arrows work fine, so go back to the plain bordered
