@@ -1,0 +1,18 @@
+# Forces browsers and any caching proxy in between (mobile carrier networks
+# included) to always check back with the server before reusing a cached
+# copy of the app's own files — index.html, app.js, style.css, translations,
+# icons... This app has no build step and no versioned/hashed filenames, so
+# every deploy overwrites the same URLs in place; without this, a stale
+# cached copy (browser, OS, or network-level) can keep showing an old
+# version indefinitely, with no way for the visitor to tell.
+#
+# "no-cache" does NOT mean "never cache" — it means "always revalidate
+# first" (a quick conditional request via ETag/Last-Modified), so an
+# unchanged file still returns a cheap 304 Not Modified instead of being
+# re-downloaded in full each time. Only an actually-changed file gets
+# re-fetched — the best of both: always fresh, still bandwidth-friendly.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|htm|js|css|json)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
