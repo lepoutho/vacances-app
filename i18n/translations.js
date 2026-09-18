@@ -18,6 +18,9 @@ const TRANSLATIONS = {
     addPersonBtn: 'Add',
     peopleEmptyHint: 'Add the people going on vacation.',
     removePersonTitle: (name) => `Remove ${name}`,
+    confirmDeletePerson: (name) => `Remove ${name}? This action cannot be undone.`,
+    confirmDeletePersonWithExpenses: (name, count) =>
+      `Remove ${name}? This will also delete ${count} expense${count === 1 ? '' : 's'} they paid for. This action cannot be undone.`,
     personSizeBadge: (size) => `· ${size} people`,
 
     expenseSectionTitle: 'New expense',
@@ -108,6 +111,9 @@ const TRANSLATIONS = {
     addPersonBtn: 'Añadir',
     peopleEmptyHint: 'Añade a las personas que se van de vacaciones.',
     removePersonTitle: (name) => `Quitar a ${name}`,
+    confirmDeletePerson: (name) => `¿Quitar a ${name}? Esta acción no se puede deshacer.`,
+    confirmDeletePersonWithExpenses: (name, count) =>
+      `¿Quitar a ${name}? Esto también eliminará ${count} gasto${count === 1 ? '' : 's'} pagado${count === 1 ? '' : 's'} por esta persona. Esta acción no se puede deshacer.`,
     personSizeBadge: (size) => `· ${size} personas`,
 
     expenseSectionTitle: 'Nuevo gasto',
@@ -198,6 +204,9 @@ const TRANSLATIONS = {
     addPersonBtn: 'Ajouter',
     peopleEmptyHint: 'Ajoute les personnes qui partent en vacances.',
     removePersonTitle: (name) => `Retirer ${name}`,
+    confirmDeletePerson: (name) => `Retirer ${name} ? Cette action est irréversible.`,
+    confirmDeletePersonWithExpenses: (name, count) =>
+      `Retirer ${name} ? Cela supprimera aussi ${count} dépense${count > 1 ? 's' : ''} payée${count > 1 ? 's' : ''} par cette personne. Cette action est irréversible.`,
     personSizeBadge: (size) => `· ${size} personnes`,
 
     expenseSectionTitle: 'Nouvelle dépense',
@@ -291,6 +300,8 @@ const TRANSLATIONS = {
     addPersonBtn: '添加',
     peopleEmptyHint: '添加参加假期的人员。',
     removePersonTitle: (name) => `移除${name}`,
+    confirmDeletePerson: (name) => `移除${name}？此操作无法撤销。`,
+    confirmDeletePersonWithExpenses: (name, count) => `移除${name}？这也会删除该用户支付的 ${count} 笔支出。此操作无法撤销。`,
     personSizeBadge: (size) => `· ${size} 人`,
 
     expenseSectionTitle: '新支出',
@@ -384,6 +395,9 @@ const TRANSLATIONS = {
     addPersonBtn: 'जोड़ें',
     peopleEmptyHint: 'छुट्टियों पर जाने वाले लोगों को जोड़ें।',
     removePersonTitle: (name) => `${name} को हटाएं`,
+    confirmDeletePerson: (name) => `${name} को हटाएं? यह क्रिया पूर्ववत नहीं की जा सकती।`,
+    confirmDeletePersonWithExpenses: (name, count) =>
+      `${name} को हटाएं? इससे इस व्यक्ति द्वारा भुगतान किए गए ${count} खर्च भी हट जाएंगे। यह क्रिया पूर्ववत नहीं की जा सकती।`,
     personSizeBadge: (size) => `· ${size} लोग`,
 
     expenseSectionTitle: 'नया खर्च',
@@ -476,6 +490,9 @@ const TRANSLATIONS = {
     addPersonBtn: 'Ongeza',
     peopleEmptyHint: 'Ongeza watu wanaokwenda likizoni.',
     removePersonTitle: (name) => `Ondoa ${name}`,
+    confirmDeletePerson: (name) => `Ondoa ${name}? Kitendo hiki hakiwezi kutenduliwa.`,
+    confirmDeletePersonWithExpenses: (name, count) =>
+      `Ondoa ${name}? Hii pia itafuta gharama ${count} zilizolipwa na mtu huyu. Kitendo hiki hakiwezi kutenduliwa.`,
     personSizeBadge: (size) => `· watu ${size}`,
 
     expenseSectionTitle: 'Gharama mpya',
