@@ -175,3 +175,23 @@ d'équilibrage cohérentes dans tous les cas.
 
 Tests réalisés dans un environnement local isolé (pas la production),
 données nettoyées après coup.
+
+---
+
+## Re-vérification — 2026-09-18
+
+Mêmes 6 scénarios rejoués à l'identique dans un nouvel environnement
+local isolé, après l'ensemble des évolutions ajoutées depuis le
+premier passage (steppers +/-, mode fin à la création, popups de
+confirmation suppression dépense/voyageur, toast desktop, etc.), pour
+s'assurer qu'aucune régression n'a été introduite sur le moteur de
+calcul lui-même.
+
+**Résultat : ✅ les 6 scénarios restent strictement conformes**, au
+centime près, y compris les points annexes vérifiés au passage :
+accord grammatical "CoupleDuo/CoupleXY doivent" (pluriel, taille > 1)
+toujours correct, popup de confirmation "dépense partielle" avec le
+texte exact attendu, et toast "Dépense ajoutée" bien visible sur
+desktop.
+
+Aucune anomalie détectée.
