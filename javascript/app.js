@@ -355,12 +355,15 @@ function renderExpenseFineParticipants(){
   wrap.hidden = false;
   wrap.innerHTML = '';
 
+  const locked = expenseFineLevelsLocked();
+
   const allSelected = state.people.every(p => selectedParticipants.has(p.id));
   const allRow = document.createElement('label');
   allRow.className = 'join-expense-row join-expense-all';
   const allCheckbox = document.createElement('input');
   allCheckbox.type = 'checkbox';
   allCheckbox.checked = allSelected;
+  allCheckbox.disabled = locked;
   const allLabel = document.createElement('span');
   allLabel.textContent = t('allChipLabel');
   allRow.appendChild(allCheckbox);
@@ -379,8 +382,6 @@ function renderExpenseFineParticipants(){
     updateExpenseFineShares();
   });
 
-  const locked = expenseFineLevelsLocked();
-
   state.people.forEach(p => {
     const checked = selectedParticipants.has(p.id);
     const levelFraction = expenseFineLevels[p.id] !== undefined ? expenseFineLevels[p.id] : 1;
@@ -394,6 +395,7 @@ function renderExpenseFineParticipants(){
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.checked = checked;
+    checkbox.disabled = locked;
     checkbox.setAttribute('data-person-id', p.id);
     const nameSpan = document.createElement('span');
     nameSpan.className = 'join-expense-desc';
