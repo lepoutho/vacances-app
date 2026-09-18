@@ -20,7 +20,7 @@ const TRANSLATIONS = {
     removePersonTitle: (name) => `Remove ${name}`,
     confirmDeletePerson: (name) => `Remove ${name}? This action cannot be undone.`,
     confirmDeletePersonWithExpenses: (name, count) =>
-      `Remove ${name}? This will also delete ${count} expense${count === 1 ? '' : 's'} they paid for. This action cannot be undone.`,
+      `Remove ${name}? This will also delete ${count} expense${count === 1 ? '' : 's'} they paid for — any amount others still owed for ${count === 1 ? 'it' : 'them'} will go unpaid. This action cannot be undone.`,
     personSizeBadge: (size) => `· ${size} people`,
 
     expenseSectionTitle: 'New expense',
@@ -112,8 +112,8 @@ const TRANSLATIONS = {
     peopleEmptyHint: 'Añade a las personas que se van de vacaciones.',
     removePersonTitle: (name) => `Quitar a ${name}`,
     confirmDeletePerson: (name) => `¿Quitar a ${name}? Esta acción no se puede deshacer.`,
-    confirmDeletePersonWithExpenses: (name, count) =>
-      `¿Quitar a ${name}? Esto también eliminará ${count} gasto${count === 1 ? '' : 's'} pagado${count === 1 ? '' : 's'} por esta persona. Esta acción no se puede deshacer.`,
+    confirmDeletePersonWithExpenses: (name, count, isPlural) =>
+      `¿Quitar a ${name}? Esto también eliminará ${count} gasto${count === 1 ? '' : 's'} pagado${count === 1 ? '' : 's'} por ${isPlural ? 'estas personas' : 'esta persona'}, y lo que los demás ${isPlural ? 'les' : 'le'} debían por ${count === 1 ? 'ese gasto' : 'esos gastos'} quedará sin reembolsar. Esta acción no se puede deshacer.`,
     personSizeBadge: (size) => `· ${size} personas`,
 
     expenseSectionTitle: 'Nuevo gasto',
@@ -205,8 +205,8 @@ const TRANSLATIONS = {
     peopleEmptyHint: 'Ajoute les personnes qui partent en vacances.',
     removePersonTitle: (name) => `Retirer ${name}`,
     confirmDeletePerson: (name) => `Retirer ${name} ? Cette action est irréversible.`,
-    confirmDeletePersonWithExpenses: (name, count) =>
-      `Retirer ${name} ? Cela supprimera aussi ${count} dépense${count > 1 ? 's' : ''} payée${count > 1 ? 's' : ''} par cette personne. Cette action est irréversible.`,
+    confirmDeletePersonWithExpenses: (name, count, isPlural) =>
+      `Retirer ${name} ? Cela supprimera aussi ${count} dépense${count > 1 ? 's' : ''} payée${count > 1 ? 's' : ''} par ${isPlural ? 'ces personnes' : 'cette personne'} et entraînera un non-remboursement ${count > 1 ? `des sommes qui ${isPlural ? 'leur' : 'lui'} étaient dues` : `de la somme qui ${isPlural ? 'leur' : 'lui'} était due`}. Cette action est irréversible.`,
     personSizeBadge: (size) => `· ${size} personnes`,
 
     expenseSectionTitle: 'Nouvelle dépense',
@@ -301,7 +301,7 @@ const TRANSLATIONS = {
     peopleEmptyHint: '添加参加假期的人员。',
     removePersonTitle: (name) => `移除${name}`,
     confirmDeletePerson: (name) => `移除${name}？此操作无法撤销。`,
-    confirmDeletePersonWithExpenses: (name, count) => `移除${name}？这也会删除该用户支付的 ${count} 笔支出。此操作无法撤销。`,
+    confirmDeletePersonWithExpenses: (name, count) => `移除${name}？这也会删除该用户支付的 ${count} 笔支出，其他人因此欠下的款项将不会被偿还。此操作无法撤销。`,
     personSizeBadge: (size) => `· ${size} 人`,
 
     expenseSectionTitle: '新支出',
@@ -397,7 +397,7 @@ const TRANSLATIONS = {
     removePersonTitle: (name) => `${name} को हटाएं`,
     confirmDeletePerson: (name) => `${name} को हटाएं? यह क्रिया पूर्ववत नहीं की जा सकती।`,
     confirmDeletePersonWithExpenses: (name, count) =>
-      `${name} को हटाएं? इससे इस व्यक्ति द्वारा भुगतान किए गए ${count} खर्च भी हट जाएंगे। यह क्रिया पूर्ववत नहीं की जा सकती।`,
+      `${name} को हटाएं? इससे इस व्यक्ति द्वारा भुगतान किए गए ${count} खर्च भी हट जाएंगे, और इसके बदले दूसरों पर बकाया राशि का भुगतान नहीं हो पाएगा। यह क्रिया पूर्ववत नहीं की जा सकती।`,
     personSizeBadge: (size) => `· ${size} लोग`,
 
     expenseSectionTitle: 'नया खर्च',
@@ -492,7 +492,7 @@ const TRANSLATIONS = {
     removePersonTitle: (name) => `Ondoa ${name}`,
     confirmDeletePerson: (name) => `Ondoa ${name}? Kitendo hiki hakiwezi kutenduliwa.`,
     confirmDeletePersonWithExpenses: (name, count) =>
-      `Ondoa ${name}? Hii pia itafuta gharama ${count} zilizolipwa na mtu huyu. Kitendo hiki hakiwezi kutenduliwa.`,
+      `Ondoa ${name}? Hii pia itafuta gharama ${count} zilizolipwa na mtu huyu, na kiasi ambacho wengine walimdai hakitalipwa. Kitendo hiki hakiwezi kutenduliwa.`,
     personSizeBadge: (size) => `· watu ${size}`,
 
     expenseSectionTitle: 'Gharama mpya',

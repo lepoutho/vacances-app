@@ -223,8 +223,9 @@ function removePerson(id){
   const person = state.people.find(p => p.id === id);
   if(!person) return;
   const paidCount = state.expenses.filter(e => e.payer === id).length;
+  const isPlural = personSize(person) > 1;
   const message = paidCount > 0
-    ? t('confirmDeletePersonWithExpenses', person.name, paidCount)
+    ? t('confirmDeletePersonWithExpenses', person.name, paidCount, isPlural)
     : t('confirmDeletePerson', person.name);
   showConfirm(message, { danger: true }).then(sure => {
     if(!sure) return;
