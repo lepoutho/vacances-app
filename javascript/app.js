@@ -220,12 +220,21 @@ function renderPeople(){
 }
 
 function removePerson(id){
-  state.people = state.people.filter(p => p.id !== id);
-  state.expenses = state.expenses.filter(e => e.payer !== id);
-  state.expenses.forEach(e => { e.participants = e.participants.filter(pid => pid !== id); });
-  state.expenses = state.expenses.filter(e => e.participants.length > 0);
-  selectedParticipants.delete(id);
-  save(); render();
+  const person = state.people.find(p => p.id === id);
+  if(!person) return;
+  const paidCount = state.expenses.filter(e => e.payer === id).length;
+  const message = paidCount > 0
+    ? t('confirmDeletePersonWithExpenses', person.name, paidCount)
+    : t('confirmDeletePerson', person.name);
+  showConfirm(message, { danger: true }).then(sure => {
+    if(!sure) return;
+    state.people = state.people.filter(p => p.id !== id);
+    state.expenses = state.expenses.filter(e => e.payer !== id);
+    state.expenses.forEach(e => { e.participants = e.participants.filter(pid => pid !== id); });
+    state.expenses = state.expenses.filter(e => e.participants.length > 0);
+    selectedParticipants.delete(id);
+    save(); render();
+  });
 }
 
 // Reuses the same +/- stepper as the participation-percentage fields —
