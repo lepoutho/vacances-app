@@ -570,6 +570,9 @@ function addExpense(desc, amount, payer, participants, participationLevels){
   // percentages) over to an unrelated expense.
   expenseFineMode = false;
   expenseFineLevels = {};
+  // Same for who's included: every new expense starts with everyone in
+  // (the "Tous" box checked), not with the previous expense's subset.
+  selectedParticipants = new Set(state.people.map(p => p.id));
   save(); render();
   $('expenseDesc').focus();
   showToast(t('expenseAddedToast'));
