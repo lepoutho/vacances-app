@@ -26,7 +26,7 @@ function renderJoinExpensesItems(){
     const row = document.createElement('div');
     row.className = 'join-expense-row' + (isPartial ? ' join-expense-row-partial' : '');
     row.innerHTML = `
-      <label class="join-expense-label">
+      <div class="join-expense-label join-expense-label-static">
         <input type="checkbox" data-expense-id="${exp.id}"/>
         <span class="join-expense-info">
           <span class="join-expense-top">
@@ -35,7 +35,7 @@ function renderJoinExpensesItems(){
           </span>
           <span class="join-expense-payer">${t('payerSelectPrefix')}${escapeHtml(payerName)}</span>
         </span>
-      </label>
+      </div>
       <div class="join-expense-level" hidden>
         <span class="join-expense-level-label">${escapeHtml(t('joinExpensesLevelLabel'))}</span>
         <div class="level-stepper">
