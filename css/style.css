@@ -487,6 +487,10 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
 }
 .join-expense-row:hover{ background: var(--bg); }
 .join-expense-label{ flex:1; display:flex; align-items:flex-start; gap:10px; cursor: pointer; min-width:0; }
+/* Rows that are plain divs, not labels: only the checkbox itself toggles,
+   clicking the name or the rest of the row does nothing. */
+.join-expense-label-static{ cursor: default; }
+div.join-expense-all input[type="checkbox"]{ accent-color: var(--teal); }
 .join-expense-label input[type="checkbox"]{
   width: 16px; height: 16px; flex: none; accent-color: var(--teal);
   align-self: flex-start; margin-top: 3px;
@@ -575,6 +579,15 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
 @media (hover: none), (pointer: coarse){
   .join-expense-row:not(.join-expense-all){ flex-direction: column; align-items: stretch; }
   .join-expense-level{ margin-top: 2px; justify-content: center; }
+  /* Now that only the checkbox itself toggles (the row is inert), it's the
+     sole tap target on these rows — 16px is too small for a finger. Only
+     our own div rows; the join-expenses popup's label rows are untouched. */
+  .join-expense-label-static input[type="checkbox"],
+  div.join-expense-all input[type="checkbox"]{
+    width: 26px; height: 26px; margin: 0; flex: none;
+  }
+  .join-expense-label-static{ align-items: center; }
+  div.join-expense-all{ align-items: center; }
 }
 .join-expense-level-label{ font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
 .join-expense-all{
