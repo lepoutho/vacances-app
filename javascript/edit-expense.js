@@ -56,7 +56,7 @@ function renderEditExpenseParticipants(existingLevels){
   wrap.innerHTML = '';
 
   const allSelected = state.people.length > 0 && state.people.every(p => editExpenseParticipants.has(p.id));
-  const allRow = document.createElement('label');
+  const allRow = document.createElement('div');
   allRow.className = 'join-expense-row join-expense-all';
   const allCheckbox = document.createElement('input');
   allCheckbox.type = 'checkbox';
@@ -87,8 +87,8 @@ function renderEditExpenseParticipants(existingLevels){
     const row = document.createElement('div');
     row.className = 'join-expense-row edit-expense-person-row';
 
-    const label = document.createElement('label');
-    label.className = 'join-expense-label';
+    const label = document.createElement('div');
+    label.className = 'join-expense-label join-expense-label-static';
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.checked = checked;
