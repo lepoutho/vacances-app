@@ -89,13 +89,11 @@ function showModal({ message, confirmKey = 'modalOkBtn', cancelKey = null, dange
       overlay.hidden = true;
       confirmBtn.removeEventListener('click', onConfirm);
       cancelBtn.removeEventListener('click', onCancel);
-      overlay.removeEventListener('click', onOverlayClick);
       document.removeEventListener('keydown', onKeydown);
       resolve(result);
     }
     function onConfirm(){ cleanup(true); }
     function onCancel(){ cleanup(false); }
-    function onOverlayClick(e){ if(e.target === overlay) cleanup(false); }
     function onKeydown(e){
       if(e.key === 'Escape') cleanup(false);
       // Skip only when Cancel itself is focused, so its own native Enter
@@ -108,7 +106,6 @@ function showModal({ message, confirmKey = 'modalOkBtn', cancelKey = null, dange
 
     confirmBtn.addEventListener('click', onConfirm);
     cancelBtn.addEventListener('click', onCancel);
-    overlay.addEventListener('click', onOverlayClick);
     document.addEventListener('keydown', onKeydown);
 
     overlay.hidden = false;
@@ -244,6 +241,13 @@ function removePerson(id){
 // with a floor of 1), so no separate logic is needed just for this field.
 $('personSizeMinus').addEventListener('click', () => stepLevelInput($('personSize'), -1));
 $('personSizePlus').addEventListener('click', () => stepLevelInput($('personSize'), 1));
+
+// Long-pressing a +/- button opens the browser's context menu on touch
+// devices (Android fires "contextmenu"; iOS is handled by CSS). Delegated on
+// document because most of these buttons are rebuilt on every render.
+document.addEventListener('contextmenu', (e) => {
+  if(e.target.closest && e.target.closest('.level-step-btn')) e.preventDefault();
+});
 
 $('personForm').addEventListener('submit', (e) => {
   e.preventDefault();
