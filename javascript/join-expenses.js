@@ -122,10 +122,6 @@ $('joinExpensesConfirmBtn').addEventListener('click', () => {
   closeJoinExpensesModal();
 });
 
-$('joinExpensesModal').addEventListener('click', (e) => {
-  if(e.target === $('joinExpensesModal')) closeJoinExpensesModal();
-});
-
 document.addEventListener('keydown', (e) => {
   if($('joinExpensesModal').hidden) return;
   if(e.key === 'Escape') closeJoinExpensesModal();

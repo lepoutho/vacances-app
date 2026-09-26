@@ -224,10 +224,6 @@ $('editExpenseSaveBtn').addEventListener('click', () => {
 
 $('editExpenseCancelBtn').addEventListener('click', closeEditExpenseModal);
 
-$('editExpenseModal').addEventListener('click', (e) => {
-  if(e.target === $('editExpenseModal')) closeEditExpenseModal();
-});
-
 document.addEventListener('keydown', (e) => {
   if($('editExpenseModal').hidden) return;
   if(e.key === 'Escape') closeEditExpenseModal();
