@@ -272,8 +272,15 @@ $('personForm').addEventListener('submit', (e) => {
   input.value = '';
   sizeInput.value = '1';
   save(); render();
-  input.focus();
-  if(hadExpenses) openJoinExpensesModal(person.id);
+  // Keep the name field focused for quickly adding the next traveler, except
+  // when the join-expenses modal is about to open: it covers the form, so a
+  // phone/tablet keyboard popping up behind it would be pure noise.
+  if(hadExpenses){
+    input.blur();
+    openJoinExpensesModal(person.id);
+  }else{
+    input.focus();
+  }
 });
 
 /* ---------- Expense form helpers ---------- */
