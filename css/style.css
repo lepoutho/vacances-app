@@ -467,6 +467,19 @@ footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 
   max-height: 260px;
   overflow-y: auto;
 }
+/* Phones and tablets draw a thin overlay scrollbar that fades out a moment
+   after scrolling, so nothing tells you the list continues. Styling the
+   scrollbar explicitly makes browsers keep it on screen permanently, in the
+   app's orange. The standard scrollbar-color/width properties are only used
+   where ::-webkit-scrollbar isn't supported (Firefox): Chrome 121+ ignores
+   the webkit version as soon as those are set, and would bring the
+   auto-hiding overlay bar back. */
+.join-expenses-list::-webkit-scrollbar{ width: 10px; }
+.join-expenses-list::-webkit-scrollbar-track{ background: rgba(242,169,59,0.18); border-radius: 10px; }
+.join-expenses-list::-webkit-scrollbar-thumb{ background: var(--sun); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; min-height: 40px; }
+@supports not selector(::-webkit-scrollbar){
+  .join-expenses-list{ scrollbar-color: var(--sun) rgba(242,169,59,0.18); scrollbar-width: auto; }
+}
 .join-expense-row{
   display:flex; align-items:flex-start; gap:10px;
   padding: 10px 14px;

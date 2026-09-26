@@ -63,6 +63,10 @@ function openJoinExpensesModal(personId){
   renderJoinExpensesItems();
   $('joinExpensesAllCheckbox').checked = false;
   $('joinExpensesModal').hidden = false;
+  // Only meaningful once visible (a hidden element has no scroll position),
+  // and needed because the list element is reused between openings.
+  document.querySelector('#joinExpensesModal .join-expenses-list').scrollTop = 0;
+  $('joinExpensesModal').querySelector('.modal-box').scrollTop = 0;
 }
 
 function closeJoinExpensesModal(){
