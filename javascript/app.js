@@ -5,8 +5,22 @@ const LOCALE_MAP = { en: 'en-US', es: 'es-ES', fr: 'fr-FR', zh: 'zh-CN', hi: 'hi
 let currentLang = 'fr';
 try{
   const savedLang = localStorage.getItem(LANG_STORAGE_KEY);
-  if(savedLang && TRANSLATIONS[savedLang]) currentLang = savedLang;
-}catch(e){ /* localStorage unavailable */ }
+  if(savedLang && TRANSLATIONS[savedLang]){
+    currentLang = savedLang;
+  }else{
+    // First visit, no explicit choice saved yet: offer the visitor's own
+    // browser language when we support it, instead of always defaulting to
+    // French regardless of who lands on the page. Not persisted here — only
+    // an actual pick via the language selector below counts as a real
+    // preference — so this keeps re-detecting on later first-visits (e.g. a
+    // cleared browser) rather than locking in a one-time guess.
+    const browserLangs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language];
+    const detected = browserLangs
+      .map(l => (l || '').split('-')[0].toLowerCase())
+      .find(code => TRANSLATIONS[code]);
+    if(detected) currentLang = detected;
+  }
+}catch(e){ /* localStorage/navigator unavailable */ }
 
 let state = { tripName: TRANSLATIONS[currentLang].defaultTripName, people: [], expenses: [] };
 let selectedParticipants = new Set();
