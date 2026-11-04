@@ -595,9 +595,16 @@ function addExpense(desc, amount, payer, participants, participationLevels){
 // Reads the fine-mode rows (when open) into the same sparse pid->fraction
 // shape stored on an expense — mirrors the save logic in edit-expense.js.
 function buildExpenseFineLevels(participants){
-  if(!expenseFineMode) return null;
   const newLevels = {};
   participants.forEach(pid => {
+    if(!expenseFineMode){
+      // Back in simple mode the detail rows are gone from the DOM, but the
+      // percentages typed there are still kept in expenseFineLevels (see
+      // updateExpenseFineShares) and must still apply on save.
+      const kept = expenseFineLevels[pid];
+      if(kept !== undefined && kept !== 1) newLevels[pid] = kept;
+      return;
+    }
     const input = document.querySelector(`#expenseFineParticipants .edit-expense-level-input[data-person-id="${pid}"]`);
     if(!input) return;
     const level = clampLevelValue(parseInt(input.value, 10), input);
