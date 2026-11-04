@@ -74,6 +74,8 @@ const TRANSLATIONS = {
       `${peopleCount} ${peopleCount === 1 ? 'person' : 'people'} · ${expenseCount} ${expenseCount === 1 ? 'expense' : 'expenses'}`,
 
     footerText: "This trip's data stays saved in your browser.",
+
+    feedbackLink: 'Feedback or a suggestion?',
     importInvalidFile: 'This file does not look like a valid Vacances app save.',
     duplicateNameWarning: (name) => `"${name}" has already been added. Please choose a different name so travelers stay distinguishable.`,
     requiredFieldWarning: 'Please fill in this field.',
@@ -167,6 +169,8 @@ const TRANSLATIONS = {
       `${peopleCount} persona${peopleCount === 1 ? '' : 's'} · ${expenseCount} gasto${expenseCount === 1 ? '' : 's'}`,
 
     footerText: 'Los datos de este viaje se guardan en tu navegador.',
+
+    feedbackLink: '¿Una opinión o una sugerencia?',
     importInvalidFile: 'Este archivo no parece ser una copia de seguridad válida de la app Vacaciones.',
     duplicateNameWarning: (name) => `"${name}" ya ha sido añadido. Elige un nombre diferente para que los viajeros sigan siendo distinguibles.`,
     requiredFieldWarning: 'Por favor, rellena este campo.',
@@ -260,6 +264,8 @@ const TRANSLATIONS = {
       `${peopleCount} personne${peopleCount > 1 ? 's' : ''} · ${expenseCount} dépense${expenseCount > 1 ? 's' : ''}`,
 
     footerText: 'Les données de ce voyage restent enregistrées dans ton navigateur.',
+
+    feedbackLink: 'Un avis, une suggestion ?',
     importInvalidFile: "Ce fichier ne semble pas être une sauvegarde valide de l'appli Vacances.",
     duplicateNameWarning: (name) => `« ${name} » a déjà été ajouté. Merci de choisir un nom différent pour que les voyageurs restent identifiables.`,
     requiredFieldWarning: 'Merci de remplir ce champ.',
@@ -352,6 +358,8 @@ const TRANSLATIONS = {
     headerSummary: (peopleCount, expenseCount) => `${peopleCount} 人 · ${expenseCount} 笔支出`,
 
     footerText: '本次旅行的数据保存在您的浏览器中。',
+
+    feedbackLink: '有意见或建议吗？',
     importInvalidFile: '此文件看起来不是有效的 Vacances 应用存档。',
     duplicateNameWarning: (name) => `"${name}" 已经添加过了。请选择一个不同的名字，以便区分各位旅行者。`,
     requiredFieldWarning: '请填写此字段。',
@@ -449,6 +457,8 @@ const TRANSLATIONS = {
     headerSummary: (peopleCount, expenseCount) => `${peopleCount} लोग · ${expenseCount} खर्च`,
 
     footerText: 'इस यात्रा का डेटा आपके ब्राउज़र में सहेजा रहता है।',
+
+    feedbackLink: 'कोई राय या सुझाव?',
     importInvalidFile: 'यह फ़ाइल Vacances ऐप की वैध सेव फ़ाइल नहीं लगती।',
     duplicateNameWarning: (name) => `"${name}" पहले ही जोड़ा जा चुका है। कृपया एक अलग नाम चुनें ताकि यात्रियों की पहचान अलग-अलग बनी रहे।`,
     requiredFieldWarning: 'कृपया यह फ़ील्ड भरें।',
@@ -544,6 +554,8 @@ const TRANSLATIONS = {
     headerSummary: (peopleCount, expenseCount) => `watu ${peopleCount} · gharama ${expenseCount}`,
 
     footerText: 'Data ya safari hii inabaki imehifadhiwa kwenye kivinjari chako.',
+
+    feedbackLink: 'Maoni au pendekezo?',
     importInvalidFile: 'Faili hii haionekani kuwa hifadhi halali ya programu ya Vacances.',
     duplicateNameWarning: (name) => `"${name}" tayari ameongezwa. Tafadhali chagua jina tofauti ili wasafiri wabaki wakitofautishwa.`,
     requiredFieldWarning: 'Tafadhali jaza sehemu hii.',

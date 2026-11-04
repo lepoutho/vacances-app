@@ -367,6 +367,9 @@ button:active{ transform: scale(0.97); }
 .empty-hint{ color: var(--ink-soft); font-size: 13px; margin-top: 10px; }
 
 footer{ text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 40px; }
+footer p{ margin: 0 0 6px; }
+.footer-feedback{ color: var(--ink-soft); text-decoration: underline; }
+.footer-feedback:hover{ color: var(--teal); }
 
 /* ---------- Modal dialogs (replaces native alert/confirm, which the
    browser renders in its own UI language, not the page's) ---------- */
