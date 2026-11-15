@@ -573,10 +573,36 @@ $('expenseAmount').addEventListener('input', () => {
   if(expenseFineMode) renderExpenseFineParticipants();
 });
 
+/* Tells ping.php (server-side counter) that an expense was created. Sends a
+   random anonymous id generated once in this browser — no IP is stored on
+   the server, and the id says nothing about who the person is. Fire and
+   forget: the app must work the same when the script is missing (local
+   file, dev server) or the request is blocked. */
+function getAnonymousId(){
+  let id = null;
+  try{ id = localStorage.getItem('vacances-uid'); }catch(e){ /* storage unavailable */ }
+  if(id) return id;
+  id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now().toString(16) + Math.random().toString(16).slice(2, 12));
+  try{ localStorage.setItem('vacances-uid', id); }catch(e){ /* storage unavailable */ }
+  return id;
+}
+
+function sendExpensePing(){
+  try{
+    fetch('ping.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'uid=' + encodeURIComponent(getAnonymousId()),
+      keepalive: true
+    }).catch(() => {});
+  }catch(e){ /* fetch unavailable */ }
+}
+
 function addExpense(desc, amount, payer, participants, participationLevels){
   const exp = { id: uid(), desc, amount, payer, participants };
   if(participationLevels) exp.participationLevels = participationLevels;
   state.expenses.push(exp);
+  sendExpensePing();
   $('expenseDesc').value = '';
   $('expenseAmount').value = '';
   // Fine mode is a deliberate, per-expense opt-in — reset back to the plain
